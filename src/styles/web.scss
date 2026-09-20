@@ -1,0 +1,72 @@
+$green: #2d624b;
+$forest: #173f32;
+$background: #f5f6f7;
+
+html, body, #root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: $background;
+}
+
+body { overflow: hidden; -webkit-font-smoothing: antialiased; }
+#root { display: flex; height: 100dvh; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+input, button { font: inherit; }
+
+.app-provider {
+  --wages-focus: #2d624b;
+  --wages-border: #dfe2e5;
+  --wages-row-hover: #f1f3f4;
+  --wages-focus-ring: rgba(45, 98, 75, 0.09);
+  color-scheme: light;
+}
+
+.app-theme-dark {
+  --wages-focus: #a2d2ac;
+  --wages-border: #363c41;
+  --wages-row-hover: #282e33;
+  --wages-focus-ring: rgba(162, 210, 172, 0.12);
+  color-scheme: dark;
+}
+
+body:has(.app-theme-dark) { background: #111416; }
+::selection { color: $forest; background: #d9f49b; }
+:focus-visible { outline-offset: 3px; outline: 2px solid var(--wages-focus, #{$green}); }
+input:focus-visible { outline: none; }
+input::placeholder { opacity: 1; }
+
+[data-wages-class] {
+  transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+[role='button'] {
+  cursor: pointer;
+  touch-action: manipulation;
+
+  &:hover { opacity: 0.8; }
+  &[aria-disabled='true'] { cursor: default; }
+}
+
+.brand-logo { user-select: none; }
+
+.number-control:focus-within {
+  border-color: var(--wages-focus) !important;
+  box-shadow: 0 0 0 3px var(--wages-focus-ring);
+}
+
+.number-input, .income-table-gross, .income-table-tax, .income-table-net { font-variant-numeric: tabular-nums; }
+.number-input { caret-color: var(--wages-focus); }
+.income-table-gross, .income-table-tax, .income-table-net { overflow-wrap: anywhere; }
+
+@media (hover: hover) and (pointer: fine) {
+  .income-table-row:hover { background-color: var(--wages-row-hover); }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { border-radius: 8px; background: #84978b66; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

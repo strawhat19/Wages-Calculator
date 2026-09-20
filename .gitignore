@@ -1,0 +1,9 @@
+.expo/
+.vercel/
+dist/
+web-build/
+node_modules/
+.DS_Store
+*.tsbuildinfo
+npm-debug.log*
+.env*.local

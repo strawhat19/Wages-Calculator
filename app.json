@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Wages Calculator",
+    "slug": "wages-calculator",
+    "scheme": "wages-calculator",
+    "version": "1.0.0",
+    "userInterfaceStyle": "automatic",
+    "icon": "./angular-ionic-calculator.png",
+    "platforms": ["ios", "android", "web"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.strawhat19.wagescalculator"
+    },
+    "android": {
+      "package": "com.strawhat19.wagescalculator"
+    },
+    "web": {
+      "output": "single",
+      "bundler": "metro",
+      "name": "Wages Calculator",
+      "themeColor": "#173f32",
+      "backgroundColor": "#f6f7f3",
+      "favicon": "./angular-ionic-calculator.png",
+      "description": "Calculate wages, estimated tax, and take-home pay in one compact view, with light and dark modes."
+    }
+  }
+}
