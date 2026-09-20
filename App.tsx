@@ -8,6 +8,7 @@ import { IncomeCard } from './src/components/IncomeCard';
 import { Box, Label, Button } from './src/components/ui';
 import { useCalculator } from './src/hooks/useCalculator';
 import { X, Sun, Moon, RotateCcw } from 'lucide-react-native';
+import { Footer, footerHeight } from './src/components/Footer';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, ThemeContext, elementProps, webClass, type Palette } from './src/styles/theme';
 import { Image, Platform, ScrollView, StyleSheet, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
@@ -22,7 +23,7 @@ const CalculatorPage = () => {
   const showAds = Platform.OS === `web`;
   const adSidebar = showAds && width >= 1280;
   const styles = createStyles(colors);
-  const minimumHeight = compact ? 0 : Math.max(420, height - (showAds && !adSidebar ? 224 : 100));
+  const minimumHeight = compact ? 0 : Math.max(420, height - footerHeight.web - (showAds && !adSidebar ? 224 : 100));
   const confirmReset = () => {
     reset();
     setResetOpen(false);
@@ -125,6 +126,7 @@ const CalculatorPage = () => {
           </Box>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Footer compact={compact} />
     </SafeAreaView>
   );
 };

@@ -27,6 +27,14 @@ User should be able to inspect any element and see its class and then give that 
 
 <Text style={[styles.tabLabel, { color: timelineMode === value ? palette.blue : palette.muted }]} {...elementProps(`analytics-timeline-tab-label`, `${scope}-${value}`)}>{label}</Text>
 
+or 
+
+<Label className={`intro-eyebrow`} style={styles.eyebrow}>{`A LITTLE CLARITY GOES A LONG WAY`}</Label>
+
+or
+
+<Label className={`reset-confirmation-title`} style={styles.resetTitle}>{`Start fresh?`}</Label>
+
 prefer like this
 
 <Text 
@@ -35,5 +43,17 @@ prefer like this
 >
     {label}
 </Text>
+
+or this 
+
+<Label className={`intro-eyebrow`} style={styles.eyebrow}>
+    {`A LITTLE CLARITY GOES A LONG WAY`}
+</Label>
+
+or this
+
+<Label className={`reset-confirmation-title`} style={styles.resetTitle}>
+    {`Start fresh?`}
+</Label>
 
 8. in javascript or typescript or tsx or jsx, always use backticks whenever possible, if not then use single quotes, and double quotes as a last resort.

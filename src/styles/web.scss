@@ -49,6 +49,9 @@ input::placeholder { opacity: 1; }
 }
 
 .brand-logo { user-select: none; }
+.footer-clock-value { font-variant-numeric: tabular-nums; }
+.footer-piratechs-link { text-decoration: none; transition: opacity 180ms ease; }
+.footer-piratechs-link:hover .footer-piratechs-label { text-decoration: underline; }
 
 .number-control:focus-within {
   border-color: var(--wages-focus) !important;
