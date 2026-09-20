@@ -36,4 +36,10 @@ Shared React Native styles support the native and web interfaces. `src/styles/we
 
 The website reserves a 300 × 250 sidebar space at widths of 1280px and above. Smaller screens get a banner below the calculator: up to 728 × 90 on tablets and 320 × 50 on phones. These are non-interactive placeholders in `src/components/AdSpace.tsx`; no ad network or tracking scripts are connected. Native iOS and Android layouts omit these website ad spaces.
 
-Tests, build commands, and UI verification were deliberately not run, following `AGENTS.md`. Review and verify the app before committing or publishing.
+## Deployment
+
+The website is hosted at https://wages-calculator.com on Vercel under `piratechs/wages-calculator`. The GitHub `main` branch is connected for automatic production deployments. Vercel runs `npm ci` and `npm run build:web`, serves `dist`, and uses the SPA fallback in `vercel.json`.
+
+Hostinger manages the domain's DNS. The apex A record points to `76.76.21.21`, and `www` is a CNAME to the apex; both domains are assigned to the Vercel project with HTTPS. No environment variables are required.
+
+Local tests, builds, and UI verification were skipped during development following `AGENTS.md`. The production build and public HTTPS response were checked as part of the requested deployment.
