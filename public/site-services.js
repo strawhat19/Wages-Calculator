@@ -2,9 +2,10 @@
   `use strict`;
 
   const config = window.wagesSiteConfig;
+  const adScript = document.getElementById(`wages-adsense-script`);
   const slotSelector = `[data-wages-ad-slot]`;
   const privacySelector = `[data-wages-privacy-settings]`;
-  let adsReady = false;
+  let adScriptFailed = adScript?.dataset.wagesAdState === `failed`;
   let privacyAvailable = false;
 
   function hideSlots() {
@@ -20,8 +21,7 @@
     productionOrigin = false;
   }
 
-  if (!config?.adsEnabled || !config.consentReady || !config.productionBuild
-    || !config.pageMonetizable || !productionOrigin
+  if (!adScript || !config?.productionBuild || !config.pageMonetizable
     || !/^ca-pub-\d{16}$/.test(config.publisherId)) {
     hideSlots();
     return;
@@ -33,8 +33,8 @@
     });
   }
 
-  // Google's published CMP messages are deployed by the AdSense tag. The build
-  // flag records operator setup; it does not represent a visitor's consent.
+  // Google's published CMP messages are deployed by the shared head tag.
+  // Keep privacy choices available even when manual ad placements are disabled.
   window.googlefc = window.googlefc || {};
   window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
   window.googlefc.callbackQueue.push({
@@ -98,7 +98,8 @@
   function synchronize() {
     updatePrivacyButtons();
 
-    if (!adsReady || config.adMode !== `manual` || !/^[1-9]\d{0,19}$/.test(config.adSlot)) {
+    if (adScriptFailed || !productionOrigin || !config.adsEnabled || !config.consentReady
+      || config.adMode !== `manual` || !/^[1-9]\d{0,19}$/.test(config.adSlot)) {
       hideSlots();
       return;
     }
@@ -136,20 +137,13 @@
     attributeFilter: [`data-ad-status`],
   });
 
-  const script = document.createElement(`script`);
-  script.async = true;
-  script.crossOrigin = `anonymous`;
-  script.id = `wages-adsense-script`;
-  script.className = `wages-adsense-script`;
-  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(config.publisherId)}`;
-  script.onload = () => {
-    adsReady = true;
-    synchronize();
-  };
-  script.onerror = () => {
+  adScript.addEventListener(`error`, () => {
+    adScriptFailed = true;
     hideSlots();
     resizeObserver?.disconnect();
-  };
+  });
 
-  document.head.appendChild(script);
+  // Standard AdSense requests queue safely before the async head tag loads.
+  // The export installs that tag once; this runtime never appends another copy.
+  synchronize();
 })();

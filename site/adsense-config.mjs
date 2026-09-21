@@ -1,4 +1,5 @@
 export const SITE_URL = `https://wages-calculator.com`;
+export const ADSENSE_PUBLISHER_ID = `ca-pub-8379301195677583`;
 
 const publisherPattern = /^ca-pub-\d{16}$/;
 const verificationPattern = /^[A-Za-z0-9_-]{10,256}$/;
@@ -42,7 +43,7 @@ export function readSiteConfig(env = process.env) {
   const adMode = env.ADSENSE_MODE?.trim() || `manual`;
   const adsRequested = readBoolean(env, `ADSENSE_ENABLED`);
   const consentReady = readBoolean(env, `ADSENSE_CONSENT_READY`);
-  const publisherId = env.ADSENSE_PUBLISHER_ID?.trim() || ``;
+  const publisherId = env.ADSENSE_PUBLISHER_ID?.trim() ?? ADSENSE_PUBLISHER_ID;
   const searchConsoleVerification = env.GOOGLE_SITE_VERIFICATION?.trim() || ``;
   const productionBuild = env.VERCEL_ENV === undefined
     ? ![`development`, `test`].includes(env.NODE_ENV)

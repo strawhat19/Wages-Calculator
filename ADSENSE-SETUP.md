@@ -1,6 +1,6 @@
 # AdSense launch guide
 
-The code is prepared for `https://wages-calculator.com`. Ads remain off until the site owner supplies a real publisher ID, completes Google's review, publishes the appropriate consent messages, and explicitly enables serving. No AdSense account, publisher ID, analytics property, or contact email has been invented.
+The code is prepared for `https://wages-calculator.com` with the owner's publisher ID, `ca-pub-8379301195677583`. Production homepage and guide HTML include the supplied async AdSense script. Google controls approval and Auto ads through the account dashboard; the code's activation flags control manual placements only.
 
 ## What the website provides
 
@@ -8,15 +8,15 @@ The code is prepared for `https://wages-calculator.com`. Ads remain off until th
 - Original formula explanations, worked examples, and four dedicated guides.
 - About, Privacy Policy, Terms of Service, and Contact pages. Contact uses the project's actual GitHub issue tracker and Piratechs website; public issues must not include personal pay records.
 - Static HTML documents, canonical metadata, a sitemap, robots instructions, and a real 404 page.
-- Optional AdSense verification metadata, root `ads.txt`, and Search Console verification metadata.
+- The supplied AdSense script, ownership verification metadata, root `ads.txt`, and optional Search Console verification metadata.
 - A responsive manual ad placement after the homepage explanation or at the end of a guide. On mobile the homepage placement is in Guides. Supporting policies and error pages have no ad requests.
-- Ad serving disabled by default and on preview/localhost hosts. Native app screens have no web advertising.
+- Manual placements disabled by default. Preview builds and native app screens omit the AdSense script; serving a production export locally does not remove its script.
 
 Google's [readiness guidance](https://support.google.com/adsense/answer/7299563?hl=en) focuses on useful original content and clear navigation. It does not prescribe a 15–20-page minimum. These changes cannot guarantee acceptance or a review time.
 
 ## 1. Review and publish the prepared site
 
-Review the diff, especially the publisher identity, Contact page, and Privacy Policy. The disclosures describe local storage for calculator inputs/theme, hosting logs, and optional Google advertising. Google Analytics is not installed. If your hosting configuration or other services collect additional data, update the policy to match.
+Review the diff, especially the publisher identity, Contact page, and Privacy Policy. The disclosures describe local storage for calculator inputs/theme, hosting logs, and Google advertising. Google Analytics is not installed. If your hosting configuration or other services collect additional data, update the policy to match.
 
 For local export configuration, copy `.env.example` to `.env.local` and fill only the values you have. Hosting and shell variables take precedence over local environment files. Production configuration belongs in Vercel's environment settings; do not commit local environment files.
 
@@ -28,24 +28,26 @@ npm run typecheck
 npm run build:web
 ```
 
-Preview the exported `dist` directory with a static server; Expo's development server does not generate the support pages. Check the calculator at phone and desktop sizes, policy/guide navigation, default-off ad behavior, unknown-route 404s, and a reload of each direct page URL. Check the output's title, canonical URL, sitemap, and robots file.
+Preview the exported `dist` directory with a static server; Expo's development server does not generate the support pages. To omit the AdSense script in a local export, set `ADSENSE_PUBLISHER_ID` explicitly blank before exporting. Check the calculator at phone and desktop sizes, policy/guide navigation, manual placements remaining off by default, unknown-route 404s, and a reload of each direct page URL. Check the output's title, canonical URL, sitemap, and robots file.
 
 The existing Vercel project deploys GitHub `main` automatically. Review and commit/push through your usual workflow or deploy the reviewed branch first. This change has not pushed a commit or deployed production. Confirm that the public domain loads over HTTPS without authentication and redirects alternative domain versions to the canonical hostname.
 
-## 2. Add the site in AdSense, with serving still disabled
+## 2. Add the site in AdSense
 
-Sign in to [Google AdSense](https://www.google.com/adsense/), add `wages-calculator.com`, and copy the publisher ID issued to your account. In Vercel's **Production** environment, set:
+Sign in to [Google AdSense](https://www.google.com/adsense/) with the account for `ca-pub-8379301195677583` and add `wages-calculator.com`. The publisher ID is already configured in code. The equivalent Vercel **Production** settings are:
 
 | Variable | Value |
 | --- | --- |
 | `SITE_URL` | `https://wages-calculator.com` |
-| `ADSENSE_PUBLISHER_ID` | Your actual `ca-pub-` ID followed by 16 digits |
+| `ADSENSE_PUBLISHER_ID` | `ca-pub-8379301195677583` (also used when unset) |
 | `ADSENSE_ENABLED` | `false` |
 | `ADSENSE_CONSENT_READY` | `false` |
 
-Redeploy after changing build-time variables. The exported pages include the `google-adsense-account` meta tag, and `/ads.txt` contains the matching seller ID. No publisher line or verification tag is generated when the ID is absent. Invalid settings fail the export instead of publishing a dummy integration.
+Redeploy after changing build-time variables. The production homepage and four guides include the async script in `<head>`, with `crossorigin="anonymous"`. Exported pages also include the `google-adsense-account` meta tag, and `/ads.txt` contains `google.com, pub-8379301195677583, DIRECT, f08c47fec0942fa0`. An explicitly blank publisher variable suppresses the script, metadata, and seller file. Invalid settings fail the export instead of publishing a dummy integration.
 
-Choose AdSense's **Meta tag** site-verification option and request review. Google [supports meta-tag ownership verification](https://support.google.com/adsense/answer/7584263?hl=en), so you can verify the site without requesting advertisements. Check that `/ads.txt` is a plain-text response at the root of the domain. Google [recommends ads.txt](https://support.google.com/adsense/answer/12171612?hl=en); it is not itself an approval guarantee.
+Choose AdSense's **AdSense code snippet** verification option and request review. The included meta tag is also a [supported verification method](https://support.google.com/adsense/answer/7584263?hl=en). Check that `/ads.txt` is a plain-text response at the root of the domain. Google [recommends ads.txt](https://support.google.com/adsense/answer/12171612?hl=en); it is not itself an approval guarantee.
+
+Keep **Auto ads off in the AdSense dashboard** until the site's review and consent setup are ready. The script can activate dashboard-configured Auto ads even while `ADSENSE_ENABLED=false` or `ADSENSE_CONSENT_READY=false`. Those variables do not disable the script or override Google settings.
 
 Never click your own advertisements or ask visitors to click them. Do not buy artificial traffic.
 
@@ -74,7 +76,7 @@ Manual placements appear after the homepage explanation and after the guide text
 
 ## 5. Optional Auto ads
 
-Set `ADSENSE_MODE=auto` instead of manual, keep the publisher/consent/activation settings, and redeploy. The manual placement is then omitted. In AdSense enable Auto ads and review its preview before applying settings.
+After approval and consent setup, enable Auto ads in AdSense and review its preview before applying settings. The script is already present on the production homepage and guides. Set `ADSENSE_MODE=auto` and redeploy if you previously enabled manual placements and want to omit them; this variable does not switch Google's Auto ads setting on or off.
 
 Exclude the calculator inputs/results and the area above the tool. Exclude policy/contact pages and avoid disruptive overlay formats. Use banner Advanced settings for ad count and spacing, along with excluded areas and page exclusions. Google [updated these controls in 2026](https://support.google.com/adsense/answer/16683740?hl=en-GB); the older Ad Balance/ad-load advice is not the current workflow. JavaScript cannot guarantee where dashboard-configured Auto ads will appear.
 
@@ -88,4 +90,4 @@ Google Analytics is an optional separate account/integration step. If you add GA
 
 ## Remaining owner actions
 
-Review and publish the changes; provide the real publisher ID; verify/request AdSense review; publish consent messages; wait for Ready status; provide an ad slot or configure Auto ads; explicitly enable serving; and verify/submit the site in Search Console. A direct support email can replace or supplement the current GitHub contact channel once you have one to publish.
+Review and publish the changes; verify/request AdSense review; publish consent messages; wait for Ready status; enable a manual ad slot or configure Auto ads in Google; and verify/submit the site in Search Console. A direct support email can replace or supplement the current GitHub contact channel once you have one to publish.

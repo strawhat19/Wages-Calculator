@@ -13,7 +13,7 @@ npm run web
 
 Use `npm start` to open Expo and scan its QR code with an SDK 57-compatible Expo Go client or development build. Use `npm run android` for Android. The iOS simulator requires macOS; a physical iOS device can connect through a compatible client.
 
-`npm run build:web` exports the calculator and then prepares the complete static website in `dist`, including guides, policies, metadata, sitemap, and optional AdSense verification. The static support pages are generated during export, so Expo's development server only provides the calculator. See the [Expo SDK 57 notes](https://expo.dev/changelog/sdk-57) for client compatibility.
+`npm run build:web` exports the calculator and then prepares the complete static website in `dist`, including guides, policies, metadata, sitemap, and AdSense integration. The static support pages are generated during export, so Expo's development server only provides the calculator. See the [Expo SDK 57 notes](https://expo.dev/changelog/sdk-57) for client compatibility.
 
 ## Features And Calculations
 
@@ -61,9 +61,9 @@ These changes follow Google's [Search Essentials](https://developers.google.com/
 
 The website includes About, Privacy Policy, Terms of Service, Contact, and four calculation guides: hourly to salary, salary to hourly, gross versus estimated take-home pay, and work schedules/pay periods. The homepage explains the formulas, assumptions, and limitations. Content lives in `site/content.mjs`; the calculator and static export share it.
 
-AdSense is disabled by default. Once configured, manual ads have a labeled responsive placement after the homepage explanation and after guide content. On mobile, the homepage placement belongs to the Guides view, leaving Income and Pay compact. Empty placeholders do not appear. Native iOS and Android layouts omit web content and advertising.
+Production exports include the owner's AdSense script for `ca-pub-8379301195677583` in the homepage and four guide pages, plus ownership metadata and `/ads.txt`. Preview builds, policy/error pages, and native apps omit the script. The publisher ID can be overridden with `ADSENSE_PUBLISHER_ID`; setting it explicitly blank removes the script, verification metadata, and `ads.txt`.
 
-The export can publish AdSense ownership verification and `/ads.txt` using a real publisher ID while ad serving remains off. Live ad delivery requires explicit activation and confirmation of a published consent setup; it is limited to the configured production hostname. Policy and error pages do not request ads. Google Analytics is not installed.
+The script may activate Auto ads according to the Google dashboard, independently of `ADSENSE_ENABLED` and `ADSENSE_CONSENT_READY`. Those flags gate manual placements, which remain off by default. When enabled on the configured production hostname, manual ads appear after the homepage explanation and guide content; the mobile homepage placement is in Guides. Approval and consent messages require account-side setup. A production export retains its script when served on an alternative hostname or locally. Google Analytics is not installed.
 
 Follow [ADSENSE-SETUP.md](./ADSENSE-SETUP.md) for environment variables, the review process, consent configuration, deployment, and account steps. AdSense approval is decided by Google, and source changes alone do not activate an account.
 
@@ -71,6 +71,6 @@ Follow [ADSENSE-SETUP.md](./ADSENSE-SETUP.md) for environment variables, the rev
 
 The documented production site is https://wages-calculator.com on Vercel under `piratechs/wages-calculator`. The GitHub `main` branch is connected for automatic production deployments. Vercel runs `npm ci` and `npm run build:web` and serves `dist`. Supporting pages have their own static files; unknown routes return a 404 instead of displaying the calculator.
 
-The existing deployment documentation identifies Hostinger as the DNS provider, an apex A record of `76.76.21.21`, and `www` as a CNAME to the apex, with both domains assigned to Vercel and HTTPS. Keep the canonical hostname in `SITE_URL` aligned with the host's domain redirects. No environment variables are needed to run the calculator with ads disabled. Advertising and Search Console configuration are described in `.env.example` and the setup guide.
+The existing deployment documentation identifies Hostinger as the DNS provider, an apex A record of `76.76.21.21`, and `www` as a CNAME to the apex, with both domains assigned to Vercel and HTTPS. Keep the canonical hostname in `SITE_URL` aligned with the host's domain redirects. No environment variables are needed to run the calculator or include the supplied AdSense snippet in a production export. Advertising and Search Console configuration are described in `.env.example` and the setup guide.
 
 Local tests, builds, and UI verification are intentionally left to the owner under `AGENTS.md`. This AdSense preparation has not been deployed or submitted to Google for review.

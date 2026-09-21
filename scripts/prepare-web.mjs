@@ -73,7 +73,8 @@ function metadata({ title, description, pathname, pageTitle, monetizable = false
     ${config.searchConsoleVerification ? `<meta id="site-google-verification" class="site-google-verification" name="google-site-verification" content="${escapeHtml(config.searchConsoleVerification)}">` : ``}
     <link id="site-content-stylesheet" class="site-content-stylesheet" rel="stylesheet" href="/site-content.css">
     <script id="site-runtime-config" class="site-runtime-config">window.wagesSiteConfig = ${safeJson(publicConfig)};</script>
-    <script id="site-services" class="site-services" src="/site-services.js" defer></script>`;
+    <script id="site-services" class="site-services" src="/site-services.js" defer></script>
+    ${config.productionBuild && monetizable && !noindex && config.publisherId ? `<script id="wages-adsense-script" class="wages-adsense-script" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${escapeHtml(config.publisherId)}" crossorigin="anonymous" onerror="this.dataset.wagesAdState='failed'"></script>` : ``}`;
 }
 
 function navigation(prefix, pathname = `/`) {
@@ -231,4 +232,4 @@ if (config.publisherId) {
   await rm(path.join(output, `ads.txt`), { force: true });
 }
 
-console.info(`Prepared ${sitePages.length + 1} public pages, sitemap, and ${config.adsEnabled ? config.adMode : `disabled`} AdSense configuration.`);
+console.info(`Prepared ${sitePages.length + 1} public pages and sitemap; AdSense tag ${config.productionBuild && config.publisherId ? `included on calculator and guides` : `omitted`}; manual ads ${config.adsEnabled && config.adMode === `manual` ? `enabled` : `disabled`}.`);

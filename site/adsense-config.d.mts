@@ -1,4 +1,5 @@
 export const SITE_URL: string;
+export const ADSENSE_PUBLISHER_ID: string;
 
 export interface SiteConfig {
   siteUrl: string;
