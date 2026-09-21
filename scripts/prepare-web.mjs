@@ -182,9 +182,11 @@ await writeFile(path.join(output, `index.html`), exportedIndex);
 await copyFile(path.join(project, `public`, `site-services.js`), path.join(output, `site-services.js`));
 await copyFile(path.join(project, `public`, `site-navigation.js`), path.join(output, `site-navigation.js`));
 await copyFile(path.join(project, `angular-ionic-calculator.png`), path.join(output, `site-icon.png`));
-await writeFile(path.join(output, `site-content.css`), sass.compile(path.join(project, `site`, `content.scss`), {
-  style: `compressed`,
-}).css);
+// Match the web entry's stylesheet order; Expo compiles each SCSS file separately.
+const siteStyles = [`navigation.scss`, `content.scss`].map((filename) => (
+  sass.compile(path.join(project, `site`, filename), { style: `compressed` }).css
+)).join(`\n`);
+await writeFile(path.join(output, `site-content.css`), siteStyles);
 
 for (const page of sitePages) {
   const prefix = page.slug.replaceAll(`/`, `-`);
