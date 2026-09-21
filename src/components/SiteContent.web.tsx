@@ -1,4 +1,4 @@
-import { homeContent, siteLinks } from '../../site/content.mjs';
+import { homePage, homeContent, siteLinks } from '../../site/content.mjs';
 
 const footerLinks = [
   { href: `/about/`, label: `About` },
@@ -7,26 +7,32 @@ const footerLinks = [
   { href: `/contact/`, label: `Contact` },
 ];
 
+export const SiteGuideDirectory = () => (
+  <nav id={`mobile-guide-directory`} className={`mobile-guide-directory`} aria-label={`Pay guides`}>
+    <h2 id={`mobile-guide-directory-title`} className={`mobile-guide-directory-title`}>
+      {`Pay guides`}
+    </h2>
+    {siteLinks.map((link, index) => (
+      <a
+        key={link.href}
+        href={link.href}
+        className={`mobile-guide-directory-link`}
+        id={`mobile-guide-directory-link-${index}`}
+      >
+        {link.label}{` →`}
+      </a>
+    ))}
+  </nav>
+);
+
 export const SiteNavigation = () => (
   <header id={`calculator-introduction`} className={`calculator-introduction`}>
     <h1 id={`calculator-page-title`} className={`calculator-page-title`}>
-      {`Hourly and salary calculator`}
+      {homePage.heading}
     </h1>
     <p id={`calculator-page-description`} className={`calculator-page-description`}>
-      {`Compare gross pay and a flat-rate take-home estimate across your working schedule.`}
+      {homePage.intro}
     </p>
-    <nav id={`calculator-site-nav`} className={`site-nav`} aria-label={`Calculator and guides`}>
-      {siteLinks.map((link, index) => (
-        <a
-          href={link.href}
-          key={link.href}
-          className={`site-nav-link`}
-          id={`calculator-site-nav-link-${index}`}
-        >
-          {link.label}
-        </a>
-      ))}
-    </nav>
   </header>
 );
 

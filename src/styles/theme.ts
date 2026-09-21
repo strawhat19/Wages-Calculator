@@ -64,7 +64,7 @@ export const useTheme = () => {
 export const fontFamily = Platform.select({
   ios: `System`,
   default: `sans-serif`,
-  web: `-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`,
+  web: `var(--wages-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif)`,
 });
 
 export const elementProps = (className: string, id = className.split(` `)?.[0]) => ({

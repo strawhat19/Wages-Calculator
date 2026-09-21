@@ -17,7 +17,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
   const [panelWidth, setPanelWidth] = useState(0);
   const { colors } = useTheme();
   const styles = createStyles(colors);
-  const stackedPayFields = panelWidth > 0 && panelWidth < 420;
+  const stackedPayFields = panelWidth > 0 && panelWidth < (compact ? 280 : 420);
   const calculation = calculateWages(inputs);
   const hourlyValue = inputs.mode === `hourly` ? inputs.hourlyRate : displayAmount(calculation.effectiveHourlyRate);
   const salaryValue = inputs.mode === `salary` ? inputs.annualSalary : displayAmount(calculation.annualGross);

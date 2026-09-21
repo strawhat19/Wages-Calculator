@@ -4,28 +4,43 @@ const link = (id, href, text) => `<a class="site-link" id="${id}" href="${href}"
 const formula = (id, text) => `<p class="site-formula" id="${id}">${text}</p>`;
 const note = (id, text) => `<aside class="site-note" id="${id}">${text}</aside>`;
 const section = (id, title, content) => `<section class="site-section" id="${id}">${heading(`${id}-title`, title)}${content}</section>`;
+const question = (id, title, answer) => `<section class="site-section site-question" id="${id}"><h3 class="site-heading" id="${id}-title">${title}</h3>${paragraph(`${id}-answer`, answer)}</section>`;
 const list = (id, items) => `<ul class="site-list" id="${id}">${items.map((item, index) => `<li class="site-list-item" id="${id}-item-${index + 1}">${item}</li>`).join(``)}</ul>`;
 const article = (id, title, intro, content) => `<article class="site-copy site-article" id="${id}"><p class="site-eyebrow" id="${id}-eyebrow">Wages Calculator · Piratechs</p><h1 class="site-title" id="${id}-title">${title}</h1><p class="site-intro" id="${id}-intro">${intro}</p>${content}</article>`;
 const table = (id, caption, columns, rows) => `<div class="site-table-scroll" id="${id}-scroll"><table class="site-table" id="${id}"><caption class="site-table-caption" id="${id}-caption">${caption}</caption><thead class="site-table-head" id="${id}-head"><tr class="site-table-row" id="${id}-head-row">${columns.map((column, index) => `<th class="site-table-heading" id="${id}-heading-${index + 1}" scope="col">${column}</th>`).join(``)}</tr></thead><tbody class="site-table-body" id="${id}-body">${rows.map((row, index) => `<tr class="site-table-row" id="${id}-row-${index + 1}">${row.map((cell, cellIndex) => cellIndex === 0 ? `<th class="site-table-label" id="${id}-row-${index + 1}-cell-${cellIndex + 1}" scope="row">${cell}</th>` : `<td class="site-table-cell" id="${id}-row-${index + 1}-cell-${cellIndex + 1}">${cell}</td>`).join(``)}</tr>`).join(``)}</tbody></table></div>`;
 
+export const homePage = {
+  title: `Pay Calculator – Hourly & Salary | Wages Calculator`,
+  heading: `Pay calculator for hourly wages and salary`,
+  description: `Use our free pay calculator to convert hourly wages to annual salary, compare weekly and monthly gross pay, and estimate take-home pay with a flat tax rate.`,
+  intro: `Convert an hourly wage to an annual salary, or find the hourly value of a salary. Adjust your work schedule to compare daily, weekly, monthly, and yearly pay in U.S. dollars.`,
+};
+
 export const siteLinks = [
-  { href: `/guides/hourly-to-salary/`, label: `Hourly to salary` },
-  { href: `/guides/salary-to-hourly/`, label: `Salary to hourly` },
-  { href: `/guides/gross-and-take-home/`, label: `Gross & take-home` },
-  { href: `/guides/work-schedules/`, label: `Schedules & pay periods` },
+  { href: `/guides/hourly-to-salary/`, label: `Hourly to salary guide` },
+  { href: `/guides/salary-to-hourly/`, label: `Salary to hourly guide` },
+  { href: `/guides/gross-and-take-home/`, label: `Gross vs. take-home pay` },
+  { href: `/guides/work-schedules/`, label: `Monthly pay & schedules` },
 ];
 
 export const homeContent = `<section class="site-copy site-home-copy" id="home-copy">
-  <h2 class="site-title" id="home-copy-title">Understand the pay behind the number</h2>
-  <p class="site-intro" id="home-copy-intro">Compare hourly pay and annual salary using your own work schedule, then explore gross income and a simple take-home estimate. All amounts are shown in U.S. dollars.</p>
-  ${section(`home-how`, `How to use the calculator`, list(`home-steps`, [
+  <h2 class="site-title" id="home-copy-title">Calculate hourly pay, salary, and monthly income</h2>
+  <p class="site-intro" id="home-copy-intro">Use this wage calculator to compare a job offer, plan around part-time hours, or see how unpaid weeks affect annual income. Start with gross pay before deductions, then apply your own flat tax percentage for a rough take-home estimate.</p>
+  ${section(`home-how`, `How to use the pay calculator`, list(`home-steps`, [
     `Enter either your hourly rate or annual salary. The pay field you edit most recently controls the calculation; the other updates to show its equivalent.`,
     `Set hours per week, days per week, and paid weeks per year. Include paid leave in paid weeks; exclude unpaid time.`,
     `Choose a flat tax estimate for a rough scenario. The starting 24% is an example, not a recommended rate or an estimate of your personal tax liability.`,
     `Compare the hourly, daily, weekly, monthly, and yearly results. Monthly means annual income divided by 12; weekly means income per paid week.`,
   ]))}
-  ${section(`home-example`, `A worked example`, paragraph(`home-example-input`, `At $25 an hour, 40 hours a week, and 52 paid weeks, gross annual income is $52,000.00. Gross pay is $1,000.00 per paid week and $4,333.33 per average calendar month. With five workdays per week, the average gross day is $200.00.`) + paragraph(`home-example-output`, `A flat 24% estimate subtracts $12,480.00 for the year, leaving $39,520.00, or $3,293.33 per average month. Those figures do not include separate benefit deductions, retirement contributions, overtime premiums, or tax brackets.`))}
-  ${section(`home-guides`, `Go further with your comparison`, `<div class="site-guide-grid" id="home-guide-grid">${siteLinks.map((item, index) => `<a class="site-guide-link" id="home-guide-link-${index + 1}" href="${item.href}">${item.label} →</a>`).join(``)}</div>`)}
+  ${section(`home-example`, `Hourly to annual salary: a $25-an-hour example`, formula(`home-example-formula`, `Annual gross pay = hourly rate × hours per week × paid weeks per year`) + paragraph(`home-example-input`, `At $25 an hour, 40 hours a week, and 52 paid weeks, gross annual income is $25 × 40 × 52 = $52,000.00. Gross pay is $1,000.00 per paid week and $4,333.33 per average calendar month. With five workdays per week, the average gross day is $200.00.`) + paragraph(`home-example-output`, `A flat 24% estimate subtracts $12,480.00 for the year, leaving $39,520.00, or $3,293.33 per average month. Those figures do not include separate benefit deductions, retirement contributions, overtime premiums, or tax brackets.`))}
+  ${section(`home-faq`, `Pay calculator questions`,
+    question(`home-faq-twenty`, `How much is $20 an hour per year?`, `At 40 hours per week and 52 paid weeks, $20 an hour is $41,600.00 per year before deductions: $20 × 40 × 52. That is $800.00 per paid week and $3,466.67 per average month. At 30 hours per week with the same paid weeks, annual gross pay is $31,200.00.`) +
+    question(`home-faq-salary`, `How do I convert a salary to hourly pay?`, `Divide annual salary by your annual paid hours. A $50,000.00 salary with 40 hours per week and 52 paid weeks is $50,000 ÷ (40 × 52), or about $24.04 an hour. Enter salary last in the calculator to keep it fixed while you compare schedules.`) +
+    question(`home-faq-monthly`, `How do I calculate monthly pay from an hourly rate?`, `Multiply hourly pay by weekly hours and paid weeks, then divide by 12. For $20 an hour, 40 hours per week, and 52 paid weeks, average monthly gross pay is $41,600 ÷ 12 = $3,466.67. Multiplying weekly pay by four only counts 48 weeks over a full year.`) +
+    question(`home-faq-take-home`, `Does this calculator show my exact paycheck after taxes?`, `No. It estimates take-home pay by applying the single percentage you enter to gross income. For example, $800.00 gross with a 20% flat estimate leaves $640.00. It does not use tax brackets, location, filing status, benefits, or a payroll calendar. ${link(`home-faq-take-home-link`, `/guides/gross-and-take-home/`, `See how the take-home estimate works`)}`) +
+    question(`home-faq-overtime`, `Can I use it for part-time hours or overtime?`, `You can enter part-time hours and fewer paid weeks. For example, $20 an hour for 24 hours per week and 50 paid weeks is $24,000.00 per year. Every hour uses the same entered rate, so the calculator does not automatically add an overtime premium or combine jobs with different pay rates.`)
+  )}
+  ${section(`home-guides`, `Pay conversion guides and worked examples`, `<div class="site-guide-grid" id="home-guide-grid">${siteLinks.map((item, index) => `<a class="site-guide-link" id="home-guide-link-${index + 1}" href="${item.href}">${item.label} →</a>`).join(``)}</div>`)}
   ${note(`home-method-note`, `Your inputs and theme are saved in this browser when local storage is available. The calculator does not ask for your name, employer, or bank details. Use the results for comparison and check actual pay against your employer’s records. ${link(`home-privacy-link`, `/privacy/`, `Read the privacy policy`)}`)}
 </section>`;
 
@@ -33,10 +48,10 @@ export const sitePages = [
   {
     kind: `guide`,
     slug: `guides/hourly-to-salary`,
-    title: `Hourly pay to annual salary`,
-    description: `Convert hourly pay into annual and monthly income, with worked examples for paid leave, part-time hours, and unpaid weeks.`,
-    body: article(`hourly-guide`, `Hourly pay to annual salary`, `An hourly rate becomes a useful annual comparison only when you include the number of hours and paid weeks behind it.`,
-      section(`hourly-formula`, `Start with your paid schedule`,
+    title: `Hourly to salary: calculate annual pay`,
+    description: `Learn how to convert hourly pay to annual salary and monthly income with a simple formula and examples for full-time, part-time, and unpaid weeks.`,
+    body: article(`hourly-guide`, `Hourly to salary: calculate annual pay`, `To convert an hourly wage to annual salary, multiply the rate by weekly hours and paid weeks per year. Your schedule makes the difference between a useful comparison and an unrealistic annual total.`,
+      section(`hourly-formula`, `The hourly-to-salary formula`,
         formula(`hourly-equation`, `Annual gross income = hourly rate × hours per week × paid weeks per year`) +
         paragraph(`hourly-input-method`, `Enter your hourly rate last to make it the source of the calculation. When you change the work schedule afterward, that hourly rate stays fixed and the annual equivalent updates. The displayed equivalent is rounded to cents; calculation results retain their underlying precision.`) +
         paragraph(`hourly-paid-weeks`, `Paid weeks are the weeks of income you want to include. Someone paid for 50 working weeks plus two weeks of paid leave can use 52. Someone who works 50 weeks and receives no pay for the other two can use 50. Keep the treatment of paid time consistent when comparing offers.`)) +
@@ -54,15 +69,15 @@ export const sitePages = [
           `If your hours vary, run a lower-hours and higher-hours scenario. A single average can hide seasonal gaps.`,
           `Evaluate bonuses, benefits, commuting costs, and unpaid time separately. The calculator does not add these to an hourly rate.`,
           `Overtime hours are multiplied by the entered rate. Overtime premiums are not calculated automatically.`,
-        ]) + paragraph(`hourly-next`, `${link(`hourly-open-calculator`, `/`, `Try your hourly rate`)} or ${link(`hourly-schedule-link`, `/guides/work-schedules/`, `learn how paid weeks affect the results`)}.`)) +
+        ]) + paragraph(`hourly-next`, `${link(`hourly-open-calculator`, `/`, `Open the hourly pay calculator`)} or ${link(`hourly-schedule-link`, `/guides/work-schedules/`, `learn how paid weeks affect the results`)}.`)) +
       note(`hourly-limits`, `This is a pay conversion, not a payroll calculation or a determination of overtime entitlement. Amounts are displayed in USD; no currency conversion is performed.`)),
   },
   {
     kind: `guide`,
     slug: `guides/salary-to-hourly`,
-    title: `Annual salary to hourly pay`,
-    description: `Find the effective hourly value of a salary and see how hours, paid weeks, and workdays change your comparison.`,
-    body: article(`salary-guide`, `Annual salary to hourly pay`, `The same annual salary can represent very different hourly values. Your schedule supplies the missing part of the comparison.`,
+    title: `Salary to hourly: convert annual pay`,
+    description: `Convert annual salary to hourly pay using your weekly hours and paid weeks. Compare a $60,000 salary across schedules with clear worked examples.`,
+    body: article(`salary-guide`, `Salary to hourly: convert annual pay`, `To convert a salary to an hourly rate, divide annual gross pay by weekly hours multiplied by paid weeks. The same salary can represent different hourly values when the schedule changes.`,
       section(`salary-formula`, `Divide salary by annual hours`,
         formula(`salary-equation`, `Effective hourly rate = annual gross salary ÷ (hours per week × paid weeks per year)`) +
         paragraph(`salary-input-method`, `Enter annual salary last so it remains the source amount. Changing hours or paid weeks then changes the hourly equivalent while keeping the annual salary fixed. Editing the hourly field instead switches the calculation to hourly income.`) +
@@ -79,15 +94,15 @@ export const sitePages = [
       section(`salary-compare`, `A useful offer comparison`,
         paragraph(`salary-compare-example`, `An hourly offer of $30.00 for 40 hours and 50 paid weeks produces the same $60,000.00 annual gross as the example salary. It produces $62,400.00 if all 52 weeks are paid. Check schedule and leave assumptions before treating the headline rates as equivalent.`) +
         paragraph(`salary-days-explained`, `Days per week changes the average daily value. It does not change a fixed annual salary or its hourly equivalent when weekly hours and paid weeks stay the same.`) +
-        paragraph(`salary-next`, `${link(`salary-open-calculator`, `/`, `Compare a salary`)} or ${link(`salary-net-link`, `/guides/gross-and-take-home/`, `understand the take-home estimate`)}.`)) +
+        paragraph(`salary-next`, `${link(`salary-open-calculator`, `/`, `Open the salary-to-hourly calculator`)} or ${link(`salary-net-link`, `/guides/gross-and-take-home/`, `understand the take-home estimate`)}.`)) +
       note(`salary-limits`, `Benefits, bonuses, unpaid extra hours, and employer payroll rules may change the practical value of an offer. The effective hourly rate is a mathematical comparison, not an employment classification or a legal pay rate.`)),
   },
   {
     kind: `guide`,
     slug: `guides/gross-and-take-home`,
-    title: `Gross pay and estimated take-home pay`,
-    description: `Understand the calculator’s flat tax estimate, why it differs from a payslip, and how to compare gross and estimated take-home income.`,
-    body: article(`take-home-guide`, `Gross pay and estimated take-home pay`, `Gross pay is the income before the calculator’s deduction. The take-home result applies one percentage you choose; it does not calculate a tax return or an exact paycheck.`,
+    title: `Gross pay vs. take-home pay`,
+    description: `Compare gross pay with estimated take-home pay using a flat percentage. See worked examples and why this pay estimate differs from an exact paycheck.`,
+    body: article(`take-home-guide`, `Gross pay vs. take-home pay`, `Gross pay is income before deductions; take-home pay is what remains afterward. Here, the take-home estimate applies one percentage you choose. It does not calculate a tax return or an exact paycheck.`,
       section(`take-home-method`, `One percentage across every period`,
         formula(`take-home-equation`, `Estimated take-home = gross income × (1 − flat tax estimate ÷ 100)`) +
         paragraph(`take-home-default`, `The starting rate of 24% is illustrative. It is not a personal recommendation, a tax bracket lookup, or a claim about what a worker earning this amount owes. The same entered percentage is applied to every displayed period, from hourly through yearly.`) +
@@ -107,15 +122,15 @@ export const sitePages = [
         ]) + paragraph(`take-home-use-payslip`, `For a rough comparison with a recent payslip, compare the same period and the same included income. A total deduction divided by gross pay gives a historical deduction percentage, but that percentage may include items besides tax and may change when pay or benefits change. Do not treat it as a tax bracket.`)) +
       section(`take-home-next-step`, `When you need a more specific number`,
         paragraph(`take-home-irs`, `For U.S. federal income tax withholding, the ${link(`take-home-irs-link`, `https://www.irs.gov/individuals/tax-withholding-estimator`, `IRS Tax Withholding Estimator`)} asks for details that this calculator does not collect. Review its eligibility and required information before using it. Your employer’s payroll team can explain the deductions and schedule on your actual payslip.`) +
-        paragraph(`take-home-next`, `${link(`take-home-open-calculator`, `/`, `Explore a flat-rate scenario`)} or ${link(`take-home-schedules-link`, `/guides/work-schedules/`, `compare monthly averages and pay periods`)}.`)) +
+        paragraph(`take-home-next`, `${link(`take-home-open-calculator`, `/`, `Estimate gross and take-home pay`)} or ${link(`take-home-schedules-link`, `/guides/work-schedules/`, `compare monthly averages and pay periods`)}.`)) +
       note(`take-home-limits`, `Use this calculator for illustrations and comparisons. It does not provide personalized tax, financial, or payroll advice. Displayed values are rounded to cents, so separately rounded amounts can differ by a cent from a total.`)),
   },
   {
     kind: `guide`,
     slug: `guides/work-schedules`,
-    title: `Work schedules, paid weeks, and pay periods`,
-    description: `Learn why average monthly pay differs from a paycheck, how paid weeks affect income, and how to enter part-time or compressed schedules.`,
-    body: article(`schedule-guide`, `Work schedules, paid weeks, and pay periods`, `A pay rate tells only part of the story. Hours, workdays, paid weeks, and the dates you receive pay answer different questions.`,
+    title: `Weekly and monthly pay explained`,
+    description: `Calculate average monthly pay from weekly wages, compare biweekly and twice-monthly schedules, and see how part-time hours and unpaid weeks affect income.`,
+    body: article(`schedule-guide`, `Weekly and monthly pay explained`, `Weekly pay describes one paid week. Average monthly pay spreads annual income over 12 months. Your hours and paid weeks determine the annual amount; your employer’s pay schedule determines when deposits arrive.`,
       section(`schedule-inputs`, `What each schedule field does`,
         list(`schedule-input-list`, [
           `Hours per week is your total weekly paid-hours assumption. It controls annual income in hourly mode and the hourly equivalent in salary mode.`,
@@ -137,7 +152,7 @@ export const sitePages = [
         paragraph(`schedule-part-time-example`, `For three eight-hour days, enter 24 hours and three days per week. At $25.00 per hour with 52 paid weeks, that is $600.00 per paid week and $31,200.00 per year. If days have different lengths, the daily result is still an average, not a prediction for each shift.`)) +
       section(`schedule-variable`, `When the schedule varies`,
         paragraph(`schedule-variable-method`, `Run separate scenarios for quieter and busier periods, or use a weekly average that reflects the year you are estimating. Keep notes outside the calculator if you need to combine multiple jobs, different hourly rates, or a midyear pay change. Those situations are not automatically combined here.`) +
-        paragraph(`schedule-next`, `${link(`schedule-open-calculator`, `/`, `Try your work schedule`)} or ${link(`schedule-hourly-link`, `/guides/hourly-to-salary/`, `see hourly-to-salary examples`)}.`)) +
+        paragraph(`schedule-next`, `${link(`schedule-open-calculator`, `/`, `Calculate weekly and monthly pay`)} or ${link(`schedule-hourly-link`, `/guides/hourly-to-salary/`, `see hourly-to-salary examples`)}.`)) +
       note(`schedule-limits-note`, `Amounts are averages based on your inputs. Paid leave, overtime premiums, exact pay dates, and employer-specific payroll practices require information outside this calculator.`)),
   },
   {

@@ -3,13 +3,13 @@ import * as sass from 'sass';
 import { parseEnv } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import { readSiteConfig } from '../site/adsense-config.mjs';
-import { homeContent, siteLinks, sitePages } from '../site/content.mjs';
+import { createStructuredData } from '../site/structured-data.mjs';
+import { renderHeaderMenu, renderDocumentTabs } from '../site/navigation.mjs';
+import { homePage, homeContent, sitePages } from '../site/content.mjs';
 import { copyFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 
 const project = path.resolve(path.dirname(fileURLToPath(import.meta.url)), `..`);
 const output = path.join(project, `dist`);
-const homeTitle = `Hourly and Salary Calculator | Wages Calculator`;
-const homeDescription = `Compare hourly wages and salary across weekly, monthly, and annual pay periods. Estimate gross pay and a flat-rate take-home amount with transparent assumptions.`;
 const policyLinks = sitePages.filter((page) => page.kind === `policy`).map((page) => ({
   label: page.title,
   href: `/${page.slug}/`,
@@ -51,12 +51,14 @@ function safeJson(value) {
     .replace(/\u2029/g, `\\u2029`);
 }
 
-function metadata({ title, description, pathname, monetizable = false, noindex = false }) {
+function metadata({ title, description, pathname, pageTitle, monetizable = false, noindex = false }) {
   const canonical = `${config.siteUrl}${pathname}`;
   const publicConfig = { ...config, pageMonetizable: monetizable };
+  const structuredData = createStructuredData({ siteUrl: config.siteUrl, pathname, title, description, pageTitle });
 
   return `
     <title id="site-document-title" class="site-document-title">${escapeHtml(title)}</title>
+    <meta id="site-viewport" class="site-viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta id="site-description" class="site-description" name="description" content="${escapeHtml(description)}">
     <meta id="site-robots" class="site-robots" name="robots" content="${noindex || !config.productionBuild ? `noindex, nofollow` : `index, follow`}">
     <link id="site-canonical" class="site-canonical" rel="canonical" href="${escapeHtml(canonical)}">
@@ -65,6 +67,8 @@ function metadata({ title, description, pathname, monetizable = false, noindex =
     <meta id="site-og-url" class="site-og-url" property="og:url" content="${escapeHtml(canonical)}">
     <meta id="site-og-name" class="site-og-name" property="og:site_name" content="Wages Calculator">
     <meta id="site-og-description" class="site-og-description" property="og:description" content="${escapeHtml(description)}">
+    <link id="site-favicon" class="site-favicon" rel="icon" type="image/png" href="/site-icon.png">
+    ${noindex || !config.productionBuild ? `` : `<script id="site-structured-data" class="site-structured-data" type="application/ld+json">${safeJson(structuredData)}</script>`}
     ${config.publisherId ? `<meta id="site-adsense-verification" class="site-adsense-verification" name="google-adsense-account" content="${escapeHtml(config.publisherId)}">` : ``}
     ${config.searchConsoleVerification ? `<meta id="site-google-verification" class="site-google-verification" name="google-site-verification" content="${escapeHtml(config.searchConsoleVerification)}">` : ``}
     <link id="site-content-stylesheet" class="site-content-stylesheet" rel="stylesheet" href="/site-content.css">
@@ -72,12 +76,13 @@ function metadata({ title, description, pathname, monetizable = false, noindex =
     <script id="site-services" class="site-services" src="/site-services.js" defer></script>`;
 }
 
-function navigation(prefix) {
+function navigation(prefix, pathname = `/`) {
   return `<header id="${prefix}-header" class="document-header">
-    <a id="${prefix}-brand" class="document-brand" href="/">⌂ Wages Calculator</a>
-    <nav id="${prefix}-navigation" class="site-nav" aria-label="Main navigation">
-      ${siteLinks.map((link, index) => `<a id="${prefix}-navigation-${index}" class="site-navigation-link" href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`).join(`\n`)}
-    </nav>
+    <a id="${prefix}-brand" class="document-brand" href="/" aria-label="Wages Calculator home">
+      <img id="${prefix}-brand-logo" class="document-brand-logo" src="/site-icon.png" alt="" width="34" height="34">
+      <span id="${prefix}-brand-label" class="document-brand-label">Wages Calculator</span>
+    </a>
+    ${renderHeaderMenu(prefix, pathname)}
   </header>`;
 }
 
@@ -91,19 +96,33 @@ function footer(prefix) {
   </footer>`;
 }
 
-function documentShell({ title, description, pathname, body, prefix, monetizable = false, noindex = false }) {
+function breadcrumbs(prefix, pageTitle) {
+  if (!pageTitle) return ``;
+
+  return `<nav id="${prefix}-breadcrumbs" class="site-breadcrumbs" aria-label="Breadcrumb">
+    <ol id="${prefix}-breadcrumb-list" class="site-breadcrumb-list">
+      <li id="${prefix}-breadcrumb-home" class="site-breadcrumb-item"><a id="${prefix}-breadcrumb-home-link" class="site-breadcrumb-link" href="/">Pay calculator</a></li>
+      <li id="${prefix}-breadcrumb-current" class="site-breadcrumb-item" aria-current="page">${escapeHtml(pageTitle)}</li>
+    </ol>
+  </nav>`;
+}
+
+function documentShell({ title, description, pathname, pageTitle, body, prefix, monetizable = false, noindex = false }) {
   return `<!DOCTYPE html>
 <html id="site-html" class="site-html" lang="en">
   <head id="site-head" class="site-head">
     <meta id="site-charset" class="site-charset" charset="utf-8">
-    <meta id="site-viewport" class="site-viewport" name="viewport" content="width=device-width, initial-scale=1">
-    ${metadata({ title, description, pathname, monetizable, noindex })}
+    ${metadata({ title, description, pathname, pageTitle, monetizable, noindex })}
+    <script id="site-navigation-runtime" class="site-navigation-runtime" type="module" src="/site-navigation.js"></script>
   </head>
-  <body id="site-body" class="document-page">
+  <body id="site-body" class="document-page document-page--article">
     <a id="${prefix}-skip-link" class="site-skip-link" href="#${prefix}-main">Skip to content ↓</a>
-    ${navigation(prefix)}
-    <main id="${prefix}-main" class="document-main">${body}</main>
-    ${footer(prefix)}
+    ${navigation(prefix, pathname)}
+    <div id="${prefix}-content" class="document-content">
+      <main id="${prefix}-main" class="document-main" tabindex="-1">${breadcrumbs(prefix, pageTitle)}${body}</main>
+      ${footer(prefix)}
+    </div>
+    ${renderDocumentTabs(prefix, pathname)}
   </body>
 </html>\n`;
 }
@@ -129,8 +148,8 @@ for (const page of sitePages) {
 const fallback = `<div id="site-home-fallback" class="document-page site-home-fallback" style="height:100%;overflow:auto;min-height:0;">
   ${navigation(`home-fallback`)}
   <main id="home-fallback-main" class="site-copy document-main">
-    <h1 id="home-fallback-title" class="site-title">Hourly and salary calculator</h1>
-    <p id="home-fallback-description" class="site-intro">Compare gross pay and a flat-rate take-home estimate across your working schedule.</p>
+    <h1 id="home-fallback-title" class="site-title">${escapeHtml(homePage.heading)}</h1>
+    <p id="home-fallback-description" class="site-intro">${escapeHtml(homePage.intro)}</p>
     <p id="home-fallback-loading" class="site-fallback-message">Enable JavaScript to use the interactive calculator. The explanations and worked examples below are available without JavaScript.</p>
     ${homeContent}
   </main>
@@ -148,19 +167,21 @@ exportedIndex = exportedIndex.replace(/<noscript\b[^>]*>\s*You need to enable Ja
 exportedIndex = exportedIndex.replace(/<head\b([^>]*)>([\s\S]*?)<\/head>/i, (_, attributes, head) => {
   const cleanedHead = head
     .replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, ``)
-    .replace(/<meta\b[^>]*(?:name|property)\s*=\s*["'](?:description|robots|og:[^"']*|google-adsense-account|google-site-verification)["'][^>]*>/gi, ``)
-    .replace(/<link\b[^>]*rel\s*=\s*["']canonical["'][^>]*>/gi, ``);
+    .replace(/<meta\b[^>]*(?:name|property)\s*=\s*["'](?:viewport|description|robots|og:[^"']*|google-adsense-account|google-site-verification)["'][^>]*>/gi, ``)
+    .replace(/<link\b[^>]*rel\s*=\s*["'](?:canonical|icon|shortcut icon)["'][^>]*>/gi, ``);
 
   return `<head${attributes}>${cleanedHead}${metadata({
-    title: homeTitle,
+    title: homePage.title,
     pathname: `/`,
     monetizable: true,
-    description: homeDescription,
+    description: homePage.description,
   })}<noscript id="site-fallback-styles" class="site-fallback-styles"><style id="site-noscript-scroll" class="site-noscript-scroll">html,body,#root,#site-home-fallback{height:auto!important;overflow:auto!important;}#root{display:block!important;}</style></noscript></head>`;
 });
 
 await writeFile(path.join(output, `index.html`), exportedIndex);
 await copyFile(path.join(project, `public`, `site-services.js`), path.join(output, `site-services.js`));
+await copyFile(path.join(project, `public`, `site-navigation.js`), path.join(output, `site-navigation.js`));
+await copyFile(path.join(project, `angular-ionic-calculator.png`), path.join(output, `site-icon.png`));
 await writeFile(path.join(output, `site-content.css`), sass.compile(path.join(project, `site`, `content.scss`), {
   style: `compressed`,
 }).css);
@@ -177,6 +198,7 @@ for (const page of sitePages) {
     body,
     prefix,
     monetizable,
+    pageTitle: page.title,
     pathname: `/${page.slug}/`,
     description: page.description,
     title: `${page.title} | Wages Calculator`,

@@ -9,7 +9,7 @@ The code is prepared for `https://wages-calculator.com`. Ads remain off until th
 - About, Privacy Policy, Terms of Service, and Contact pages. Contact uses the project's actual GitHub issue tracker and Piratechs website; public issues must not include personal pay records.
 - Static HTML documents, canonical metadata, a sitemap, robots instructions, and a real 404 page.
 - Optional AdSense verification metadata, root `ads.txt`, and Search Console verification metadata.
-- A responsive manual ad placement below the calculator or at the end of a guide. Supporting policies and error pages have no ad requests.
+- A responsive manual ad placement after the homepage explanation or at the end of a guide. On mobile the homepage placement is in Guides. Supporting policies and error pages have no ad requests.
 - Ad serving disabled by default and on preview/localhost hosts. Native app screens have no web advertising.
 
 Google's [readiness guidance](https://support.google.com/adsense/answer/7299563?hl=en) focuses on useful original content and clear navigation. It does not prescribe a 15–20-page minimum. These changes cannot guarantee acceptance or a review time.
@@ -70,7 +70,7 @@ Wait until AdSense shows the site's status as **Ready**. Create a responsive **D
 
 Redeploy. Manual mode needs both publisher and slot IDs. Keep **Auto ads off in the AdSense dashboard** when using this placement: the common AdSense script can also activate Auto ads according to your account settings. The code cannot override those dashboard controls.
 
-Manual placements appear after the calculator on the homepage and after the guide text. Keep ads distinct from inputs, results, and navigation. An unfilled or blocked ad should not stop the calculator from working. Never use a live ad click as a test.
+Manual placements appear after the homepage explanation and after the guide text. On phone browsers, the homepage placement is in the Guides view, separate from Income and Pay. Keep ads distinct from inputs, results, and navigation. An unfilled or blocked ad should not stop the calculator from working. Never use a live ad click as a test.
 
 ## 5. Optional Auto ads
 

@@ -20,7 +20,8 @@ Use `npm start` to open Expo and scan its QR code with an SDK 57-compatible Expo
 - Hourly rate and annual salary inputs visible together, with weekly hours, days per week, and paid weeks per year.
 - Gross pay, estimated tax, and take-home pay across hourly, daily, weekly, monthly, and yearly periods.
 - An adjustable flat tax estimate, initially 24%.
-- Full-width calculator with plain input and result panels; compact stacking on phones.
+- Desktop inputs and results together, with Income, Pay, Guides, and More bottom navigation on phone browsers.
+- Clickable logo and brand name return home; the shared header menu includes every guide and information page.
 - Header dark-mode toggle with a locally saved preference, plus confirmation before resetting income.
 - Example inputs of $25 per hour and 40 hours per week.
 
@@ -28,15 +29,39 @@ The last edited pay field is authoritative; the other shows its calculated equiv
 
 Inputs are saved locally with AsyncStorage after a short delay and restored on browser reload or app reopening. Existing saved income is retained; older bill data is ignored. Data stays in that device or browser; there is no account, backend, or synchronization. The interface reports input storage failures and remains usable when local storage is unavailable. Theme preference is stored separately, so resetting income keeps your chosen appearance.
 
+Below 768px, the website keeps a compact header and bottom navigation visible around one scrollable view. Income contains the inputs, Pay the live breakdown, Guides the reading material, and More the policy links and preferences. Tabs preserve the mounted calculator and its values; the logo returns to Income without resetting them. Browser back/forward and `/#income`, `/#results`, `/#guides`, and `/#more` restore the selected view. Long articles, small viewports, and the on-screen keyboard use internal scrolling. Native apps retain their existing calculator layout.
+
+Exported guides and policy pages use the same logo/home link, header menu, and mobile navigation. Their content remains readable without JavaScript. The header menu supports keyboard operation, Escape, and outside-click dismissal; it contains ordinary crawlable links to all pages.
+
 ## Styling
 
 Shared React Native styles support the native and web interfaces. `src/styles/web.scss` adds browser-specific enhancements; SCSS is not treated as a universal native styling system. See [Expo’s Sass documentation](https://docs.expo.dev/versions/latest/config/metro/#sass).
+
+Website text uses the shared `--wages-font-family` setting in `site/content.scss`, including the brand, navigation, calculator, controls, and static documents. The React Native web font setting refers to the same variable; native platforms keep their existing system fonts.
+
+## Organic Search
+
+The homepage targets pay calculator, hourly pay calculator, and wage calculator searches with a descriptive title, heading, introduction, formula examples, and visible answers to common questions. Related pages cover specific conversion and pay-period questions:
+
+| Page | Search intent |
+| --- | --- |
+| `/` | Pay calculator, hourly calculator, wage calculator |
+| `/guides/hourly-to-salary/` | Hourly to salary, hourly to annual income |
+| `/guides/salary-to-hourly/` | Salary to hourly, annual salary divided by hours |
+| `/guides/gross-and-take-home/` | Gross pay versus estimated take-home pay |
+| `/guides/work-schedules/` | Weekly to monthly pay, paid weeks, biweekly versus twice-monthly pay |
+
+The calculator and pre-JavaScript homepage share the `homePage` copy in `site/content.mjs`. The export produces unique page metadata, canonical URLs, a shared favicon, `WebSite`/`WebPage` structured data, and visible breadcrumbs with matching `BreadcrumbList` markup. Existing guide URLs remain stable. The content accurately describes a flat-rate estimate rather than promising jurisdiction-specific payroll or tax calculations.
+
+After publishing, verify the production property in [Google Search Console](https://search.google.com/search-console), submit `https://wages-calculator.com/sitemap.xml`, and request indexing for the homepage and guides through URL Inspection. Review impressions, queries, clicks, and indexing reports to decide which genuinely useful explanations to improve. The setup does not submit URLs to Google automatically. Preview deployments remain noindex.
+
+These changes follow Google's [Search Essentials](https://developers.google.com/search/docs/essentials), [title guidance](https://developers.google.com/search/docs/appearance/title-link), and [crawlable link guidance](https://developers.google.com/search/docs/crawling-indexing/links-crawlable). Google decides whether to index a page and where to rank it; there is no guaranteed placement for a keyword.
 
 ## Website Content And Advertising
 
 The website includes About, Privacy Policy, Terms of Service, Contact, and four calculation guides: hourly to salary, salary to hourly, gross versus estimated take-home pay, and work schedules/pay periods. The homepage explains the formulas, assumptions, and limitations. Content lives in `site/content.mjs`; the calculator and static export share it.
 
-AdSense is disabled by default. Once configured, manual ads have a labeled responsive placement below the calculator and after guide content. Empty placeholders do not appear. Native iOS and Android layouts omit web content and advertising.
+AdSense is disabled by default. Once configured, manual ads have a labeled responsive placement after the homepage explanation and after guide content. On mobile, the homepage placement belongs to the Guides view, leaving Income and Pay compact. Empty placeholders do not appear. Native iOS and Android layouts omit web content and advertising.
 
 The export can publish AdSense ownership verification and `/ads.txt` using a real publisher ID while ad serving remains off. Live ad delivery requires explicit activation and confirmation of a published consent setup; it is limited to the configured production hostname. Policy and error pages do not request ads. Google Analytics is not installed.
 

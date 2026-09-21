@@ -1,53 +1,92 @@
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import logo from './angular-ionic-calculator.png';
 import { Results } from './src/components/Results';
 import { AdSpace } from './src/components/AdSpace';
+import { BrandHome } from './src/components/BrandHome';
+import { HeaderMenu } from './src/components/HeaderMenu';
+import { MobileTabs } from './src/components/MobileTabs';
 import { useAppTheme } from './src/hooks/useAppTheme';
 import { IncomeCard } from './src/components/IncomeCard';
 import { Box, Label, Button } from './src/components/ui';
 import { useCalculator } from './src/hooks/useCalculator';
-import { X, Sun, Moon, RotateCcw } from 'lucide-react-native';
+import { X, Sun, Moon, RotateCcw, ChartNoAxesColumn } from 'lucide-react-native';
 import { Footer, footerHeight } from './src/components/Footer';
-import { SiteContent, SiteNavigation, SiteFooterLinks } from './src/components/SiteContent';
+import { useMobileViewport } from './src/hooks/useMobileViewport';
+import { useMobileNavigation, type MobileTab } from './src/hooks/useMobileNavigation';
+import { SiteContent, SiteNavigation, SiteFooterLinks, SiteGuideDirectory } from './src/components/SiteContent';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, ThemeContext, elementProps, webClass, type Palette } from './src/styles/theme';
-import { Image, Platform, ScrollView, StyleSheet, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
+import { Image, Platform, Keyboard, ScrollView, StyleSheet, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
 
 const CalculatorPage = () => {
   const { width, height } = useWindowDimensions();
+  const scroll = useRef<ScrollView>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const { colors, isDark, toggleTheme } = useTheme();
+  const { activeTab, navigate, goHome } = useMobileNavigation();
   const { inputs, ready, reset, updateInput, storageStatus } = useCalculator();
   const compact = width < 900;
+  const mobile = Platform.OS === `web` && width < 768;
   const narrowHeader = width < 400;
   const styles = createStyles(colors);
+  const showCalculator = !mobile || activeTab === `income` || activeTab === `results`;
+  const shellClass = `app-safe-area${mobile ? ` app-mobile-shell` : ``}`;
   const minimumHeight = compact ? 0 : Math.max(420, height - footerHeight.web - (Platform.OS === `web` ? 220 : 100));
+  useMobileViewport(mobile);
+
+  useEffect(() => {
+    if (!mobile) return;
+    Keyboard.dismiss();
+    scroll.current?.scrollTo({ y: 0, animated: false });
+  }, [mobile, activeTab]);
+
+  const changeTab = (tab: MobileTab) => {
+    setResetOpen(false);
+    navigate(tab);
+  };
+  const openHome = () => {
+    goHome();
+    Keyboard.dismiss();
+    setResetOpen(false);
+    scroll.current?.scrollTo({ y: 0, animated: false });
+  };
+  const toggleReset = () => {
+    setResetOpen(current => !current);
+    scroll.current?.scrollTo({ y: 0, animated: false });
+  };
   const confirmReset = () => {
     reset();
     setResetOpen(false);
+    if (mobile) navigate(`income`);
   };
 
   return (
-    <SafeAreaView {...elementProps(`app-safe-area`)} style={[styles.fill, webClass(`app-safe-area`)]}>
+    <SafeAreaView
+      {...elementProps(shellClass, `app-safe-area`)}
+      edges={mobile ? [`top`, `left`, `right`] : undefined}
+      style={[styles.fill, webClass(shellClass)]}
+    >
       <Box className={`app-header`} style={styles.header}>
         <Box className={`header-inner`} style={[styles.headerInner, compact && styles.compactHeader]}>
-          <Box className={`app-brand`} style={styles.brand}>
-            <Image
-              source={logo}
-              resizeMode={`contain`}
-              accessibilityLabel={`Wages Calculator logo`}
-              {...elementProps(`brand-logo`)}
-              style={[styles.logo, webClass(`brand-logo`)]}
-            />
-            <Label className={`brand-name`} style={[styles.brandName, compact && styles.compactBrand]}>
-              {`Wages Calculator`}
-            </Label>
-          </Box>
+          <BrandHome onHome={openHome}>
+            <Box className={`app-brand`} style={styles.brand}>
+              <Image
+                source={logo}
+                resizeMode={`contain`}
+                accessibilityLabel={`Wages Calculator logo`}
+                {...elementProps(`brand-logo`)}
+                style={[styles.logo, webClass(`brand-logo`)]}
+              />
+              <Label className={`brand-name`} style={[styles.brandName, compact && styles.compactBrand]}>
+                {`Wages Calculator`}
+              </Label>
+            </Box>
+          </BrandHome>
           <Box className={`header-actions`} style={styles.headerActions}>
             <Button
               variant={`ghost`}
-              iconOnly={narrowHeader}
+              iconOnly={mobile || narrowHeader}
               icon={isDark ? Sun : Moon}
               onPress={toggleTheme}
               style={styles.headerButton}
@@ -55,7 +94,7 @@ const CalculatorPage = () => {
               className={`theme-toggle-button`}
               accessibilityLabel={isDark ? `Switch To Light Mode` : `Switch To Dark Mode`}
             />
-            <Button
+            {!mobile && <Button
               label={`Reset`}
               icon={RotateCcw}
               iconOnly={narrowHeader}
@@ -63,9 +102,10 @@ const CalculatorPage = () => {
               disabled={!ready}
               style={styles.headerButton}
               className={`reset-button`}
-              onPress={() => setResetOpen(current => !current)}
+              onPress={toggleReset}
               accessibilityState={{ expanded: resetOpen }}
-            />
+            />}
+            <HeaderMenu />
           </Box>
         </Box>
       </Box>
@@ -75,6 +115,7 @@ const CalculatorPage = () => {
         behavior={Platform.OS === `ios` ? `padding` : undefined}
       >
         <ScrollView
+          ref={scroll}
           {...elementProps(`app-scroll`)}
           keyboardDismissMode={`on-drag`}
           keyboardShouldPersistTaps={`handled`}
@@ -82,7 +123,11 @@ const CalculatorPage = () => {
           contentContainerStyle={[styles.scrollContent, compact && styles.compactScroll]}
         >
           <Box className={`page-content`} style={[styles.pageContent, compact && styles.compactContent]}>
-            <SiteNavigation />
+            {Platform.OS === `web` && (
+              <Box className={`calculator-page-intro`} style={mobile && activeTab !== `income` && styles.hidden}>
+                <SiteNavigation />
+              </Box>
+            )}
             {resetOpen && (
               <Box className={`reset-confirmation`} style={styles.resetConfirmation}>
                 <Label className={`reset-confirmation-title`} style={styles.resetTitle}>
@@ -94,13 +139,24 @@ const CalculatorPage = () => {
                 </Box>
               </Box>
             )}
-            <Box className={`page-layout`} style={[styles.pageLayout, { minHeight: minimumHeight }, compact && styles.compactPageLayout]}>
+            <Box className={`page-layout`} style={[styles.pageLayout, { minHeight: minimumHeight }, compact && styles.compactPageLayout, !showCalculator && styles.hidden]}>
               {ready ? (
                 <Box className={`calculator-layout`} style={[styles.calculatorLayout, compact && styles.stackedLayout]}>
-                  <Box className={`calculator-inputs`} style={[styles.inputColumn, compact && styles.stackedColumn]}>
+                  <Box id={`income`} className={`calculator-inputs`} style={[styles.inputColumn, compact && styles.stackedColumn, mobile && activeTab !== `income` && styles.hidden]}>
                     <IncomeCard inputs={inputs} compact={compact} onChange={updateInput} />
+                    {mobile && (
+                      <Box className={`mobile-pay-action`} style={styles.mobilePayAction}>
+                        <Button
+                          variant={`primary`}
+                          icon={ChartNoAxesColumn}
+                          label={`View pay breakdown`}
+                          className={`mobile-view-pay`}
+                          onPress={() => changeTab(`results`)}
+                        />
+                      </Box>
+                    )}
                   </Box>
-                  <Box className={`calculator-results`} style={[styles.resultsColumn, compact && styles.stackedColumn, compact && styles.stackedResults]}>
+                  <Box id={`results`} className={`calculator-results`} style={[styles.resultsColumn, compact && styles.stackedColumn, compact && styles.stackedResults, mobile && styles.mobileResults, mobile && activeTab !== `results` && styles.hidden]}>
                     <Results inputs={inputs} compact={compact} />
                   </Box>
                 </Box>
@@ -112,18 +168,55 @@ const CalculatorPage = () => {
                 </Box>
               )}
             </Box>
-            {storageStatus === `unavailable` && (
+            {storageStatus === `unavailable` && showCalculator && (
               <Label className={`storage-status-error`} style={styles.storageError} accessibilityLiveRegion={`polite`}>
                 {`Local saving is unavailable. Your changes may be lost when you close this page.`}
               </Label>
             )}
-            <AdSpace />
-            <SiteContent />
-            <SiteFooterLinks />
+            {Platform.OS === `web` && (
+              <>
+                <Box id={`guides`} className={`guides-panel`} style={mobile && activeTab !== `guides` && styles.hidden}>
+                  {mobile && <SiteGuideDirectory />}
+                  <SiteContent />
+                  <AdSpace />
+                </Box>
+                <Box id={`more`} className={`more-panel`} style={[styles.morePanel, mobile && activeTab !== `more` && styles.hidden]}>
+                  {mobile && (
+                    <Box className={`more-heading`} style={styles.moreHeading}>
+                      <Label className={`more-title`} accessibilityRole={`header`} style={styles.moreTitle}>
+                        {`More`}
+                      </Label>
+                      <Label className={`more-description`} style={styles.moreDescription}>
+                        {`About this calculator, privacy, and preferences.`}
+                      </Label>
+                    </Box>
+                  )}
+                  <SiteFooterLinks />
+                  {mobile && (
+                    <Box className={`mobile-preferences`} style={styles.mobilePreferences}>
+                      <Button
+                        icon={isDark ? Sun : Moon}
+                        label={isDark ? `Switch to light mode` : `Switch to dark mode`}
+                        className={`mobile-theme-setting`}
+                        onPress={toggleTheme}
+                      />
+                      <Button
+                        icon={RotateCcw}
+                        disabled={!ready}
+                        label={`Reset calculator`}
+                        className={`mobile-reset-setting`}
+                        onPress={toggleReset}
+                        accessibilityState={{ expanded: resetOpen }}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              </>
+            )}
           </Box>
         </ScrollView>
       </KeyboardAvoidingView>
-      <Footer compact={compact} />
+      {mobile ? <MobileTabs activeTab={activeTab} onChange={changeTab} /> : <Footer compact={compact} />}
     </SafeAreaView>
   );
 };
@@ -146,6 +239,14 @@ const App = () => {
 export default App;
 
 const createStyles = (colors: Palette) => StyleSheet.create({
+  hidden: { display: `none` },
+  morePanel: { gap: 20 },
+  moreHeading: { gap: 6 },
+  mobileResults: { borderLeftWidth: 0, borderTopWidth: 0 },
+  mobilePreferences: { gap: 12 },
+  moreTitle: { fontSize: 24, fontWeight: `600` },
+  mobilePayAction: { padding: 14, paddingTop: 0 },
+  moreDescription: { fontSize: 14, lineHeight: 21, color: colors.muted },
   compactBrand: { fontSize: 14 },
   logo: { width: 28, height: 28 },
   inputColumn: { flex: 1, minWidth: 0 },
@@ -170,7 +271,7 @@ const createStyles = (colors: Palette) => StyleSheet.create({
   headerActions: { gap: 2, flexShrink: 0, flexDirection: `row`, alignItems: `center` },
   loading: { flex: 1, minHeight: 250, alignItems: `center`, justifyContent: `center` },
   resultsColumn: { flex: 1.5, minWidth: 0, borderLeftWidth: 1, borderColor: colors.border },
-  header: { borderBottomWidth: 1, borderBottomColor: colors.border, backgroundColor: colors.card },
+  header: { zIndex: 20, borderBottomWidth: 1, borderBottomColor: colors.border, backgroundColor: colors.card },
   headerInner: { gap: 8, width: `100%`, minHeight: 64, paddingHorizontal: 24, flexDirection: `row`, alignItems: `center`, justifyContent: `space-between` },
   calculatorLayout: { flex: 1, minWidth: 0, borderWidth: 1, flexDirection: `row`, alignItems: `stretch`, borderColor: colors.border, backgroundColor: colors.card },
   resetConfirmation: { gap: 12, padding: 12, borderWidth: 1, flexWrap: `wrap`, flexDirection: `row`, alignItems: `center`, justifyContent: `space-between`, borderColor: colors.border, backgroundColor: colors.card },

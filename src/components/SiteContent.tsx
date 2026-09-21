@@ -2,3 +2,4 @@
 export const SiteContent = () => null;
 export const SiteNavigation = () => null;
 export const SiteFooterLinks = () => null;
+export const SiteGuideDirectory = () => null;

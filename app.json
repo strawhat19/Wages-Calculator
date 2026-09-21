@@ -21,7 +21,7 @@
       "themeColor": "#173f32",
       "backgroundColor": "#f6f7f3",
       "favicon": "./angular-ionic-calculator.png",
-      "description": "Calculate wages, estimated tax, and take-home pay in one compact view, with light and dark modes."
+      "description": "Use a free pay calculator to convert hourly wages to salary, compare weekly and monthly pay, and estimate take-home pay using a flat tax rate."
     }
   }
 }
