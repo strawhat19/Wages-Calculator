@@ -9,6 +9,7 @@ import { Box, Label, Button } from './src/components/ui';
 import { useCalculator } from './src/hooks/useCalculator';
 import { X, Sun, Moon, RotateCcw } from 'lucide-react-native';
 import { Footer, footerHeight } from './src/components/Footer';
+import { SiteContent, SiteNavigation, SiteFooterLinks } from './src/components/SiteContent';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, ThemeContext, elementProps, webClass, type Palette } from './src/styles/theme';
 import { Image, Platform, ScrollView, StyleSheet, KeyboardAvoidingView, useWindowDimensions } from 'react-native';
@@ -20,10 +21,8 @@ const CalculatorPage = () => {
   const { inputs, ready, reset, updateInput, storageStatus } = useCalculator();
   const compact = width < 900;
   const narrowHeader = width < 400;
-  const showAds = Platform.OS === `web`;
-  const adSidebar = showAds && width >= 1280;
   const styles = createStyles(colors);
-  const minimumHeight = compact ? 0 : Math.max(420, height - footerHeight.web - (showAds && !adSidebar ? 224 : 100));
+  const minimumHeight = compact ? 0 : Math.max(420, height - footerHeight.web - (Platform.OS === `web` ? 220 : 100));
   const confirmReset = () => {
     reset();
     setResetOpen(false);
@@ -83,6 +82,7 @@ const CalculatorPage = () => {
           contentContainerStyle={[styles.scrollContent, compact && styles.compactScroll]}
         >
           <Box className={`page-content`} style={[styles.pageContent, compact && styles.compactContent]}>
+            <SiteNavigation />
             {resetOpen && (
               <Box className={`reset-confirmation`} style={styles.resetConfirmation}>
                 <Label className={`reset-confirmation-title`} style={styles.resetTitle}>
@@ -111,18 +111,15 @@ const CalculatorPage = () => {
                   </Label>
                 </Box>
               )}
-              {adSidebar && (
-                <Box className={`advertisement-sidebar`} style={styles.adSidebar}>
-                  <AdSpace sidebar compact={false} />
-                </Box>
-              )}
             </Box>
             {storageStatus === `unavailable` && (
               <Label className={`storage-status-error`} style={styles.storageError} accessibilityLiveRegion={`polite`}>
                 {`Local saving is unavailable. Your changes may be lost when you close this page.`}
               </Label>
             )}
-            {showAds && !adSidebar && <AdSpace sidebar={false} compact={compact} />}
+            <AdSpace />
+            <SiteContent />
+            <SiteFooterLinks />
           </Box>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -149,7 +146,6 @@ const App = () => {
 export default App;
 
 const createStyles = (colors: Palette) => StyleSheet.create({
-  adSidebar: { width: 300 },
   compactBrand: { fontSize: 14 },
   logo: { width: 28, height: 28 },
   inputColumn: { flex: 1, minWidth: 0 },

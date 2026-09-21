@@ -104,7 +104,7 @@ export const Results = ({ inputs, compact }: ResultsProps) => {
           className={`breakdown-assumptions`}
           style={[styles.assumptions, compact && styles.compactAssumptions]}
         >
-          {`USD · ${calculation.taxRate}% Estimated Tax`}
+          {`USD · ${calculation.taxRate}% flat tax estimate. Actual take-home pay depends on taxes, benefits, and other deductions.`}
         </Label>
       </Box>
     </Box>
