@@ -115,6 +115,7 @@ function documentShell({ title, description, pathname, pageTitle, body, prefix, 
     <meta id="site-charset" class="site-charset" charset="utf-8">
     ${metadata({ title, description, pathname, pageTitle, monetizable, noindex })}
     <script id="site-navigation-runtime" class="site-navigation-runtime" type="module" src="/site-navigation.js"></script>
+    ${config.productionBuild && !noindex ? `<script id="site-analytics-runtime" class="site-analytics-runtime" type="module" src="/site-analytics.mjs"></script>` : ``}
   </head>
   <body id="site-body" class="document-page document-page--article">
     <a id="${prefix}-skip-link" class="site-skip-link" href="#${prefix}-main">Skip to content ↓</a>
@@ -182,6 +183,7 @@ exportedIndex = exportedIndex.replace(/<head\b([^>]*)>([\s\S]*?)<\/head>/i, (_, 
 await writeFile(path.join(output, `index.html`), exportedIndex);
 await copyFile(path.join(project, `public`, `site-services.js`), path.join(output, `site-services.js`));
 await copyFile(path.join(project, `public`, `site-navigation.js`), path.join(output, `site-navigation.js`));
+await copyFile(path.join(project, `site`, `analytics.mjs`), path.join(output, `site-analytics.mjs`));
 await copyFile(path.join(project, `angular-ionic-calculator.png`), path.join(output, `site-icon.png`));
 // Match the web entry's stylesheet order; Expo compiles each SCSS file separately.
 const siteStyles = [`navigation.scss`, `content.scss`].map((filename) => (

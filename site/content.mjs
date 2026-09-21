@@ -10,7 +10,7 @@ const article = (id, title, intro, content) => `<article class="site-copy site-a
 const table = (id, caption, columns, rows) => `<div class="site-table-scroll" id="${id}-scroll"><table class="site-table" id="${id}"><caption class="site-table-caption" id="${id}-caption">${caption}</caption><thead class="site-table-head" id="${id}-head"><tr class="site-table-row" id="${id}-head-row">${columns.map((column, index) => `<th class="site-table-heading" id="${id}-heading-${index + 1}" scope="col">${column}</th>`).join(``)}</tr></thead><tbody class="site-table-body" id="${id}-body">${rows.map((row, index) => `<tr class="site-table-row" id="${id}-row-${index + 1}">${row.map((cell, cellIndex) => cellIndex === 0 ? `<th class="site-table-label" id="${id}-row-${index + 1}-cell-${cellIndex + 1}" scope="row">${cell}</th>` : `<td class="site-table-cell" id="${id}-row-${index + 1}-cell-${cellIndex + 1}">${cell}</td>`).join(``)}</tr>`).join(``)}</tbody></table></div>`;
 
 export const homePage = {
-  title: `Pay Calculator – Hourly & Salary | Wages Calculator`,
+  title: `Wages Calculator | Pay & Hourly Calculator`,
   heading: `Pay calculator for hourly wages and salary`,
   description: `Use our free pay calculator to convert hourly wages to annual salary, compare weekly and monthly gross pay, and estimate take-home pay with a flat tax rate.`,
   intro: `Convert an hourly wage to an annual salary, or find the hourly value of a salary. Adjust your work schedule to compare daily, weekly, monthly, and yearly pay in U.S. dollars.`,
@@ -180,7 +180,7 @@ export const sitePages = [
     kind: `policy`,
     slug: `privacy`,
     title: `Privacy Policy`,
-    description: `How Wages Calculator uses local storage, hosting services, and optional Google advertising, plus choices for your data.`,
+    description: `How Wages Calculator uses local storage, Vercel Web Analytics, hosting services, and Google advertising, plus choices for your data.`,
     body: article(`privacy-page`, `Privacy Policy`, `This policy describes the website published by Piratechs at wages-calculator.com. Last updated: September 21, 2026.`,
       section(`privacy-calculator`, `Calculator inputs stay in your browser`,
         paragraph(`privacy-calculator-text`, `Wages Calculator performs its calculations in your browser. It does not ask for your name, employer, address, bank details, or government identifiers. We do not intentionally send your entered wage amounts, schedule, tax estimate, or calculation results to an analytics or advertising service.`) +
@@ -189,8 +189,11 @@ export const sitePages = [
       section(`privacy-hosting`, `Hosting and routine request information`,
         paragraph(`privacy-hosting-text`, `Visiting a website sends information needed to deliver its pages. Our hosting provider, Vercel, may process request information such as an IP address, requested URL, browser details, and request time for delivery, security, and operational logs. Local calculation does not mean that visiting the website creates no network records.`) +
         paragraph(`privacy-hosting-policy`, `For the provider’s practices, see ${link(`privacy-vercel-link`, `https://vercel.com/legal/privacy-notice`, `Vercel’s privacy notice`)}.`)) +
-      section(`privacy-google`, `Google advertising and analytics status`,
-        paragraph(`privacy-google-default`, `Google Analytics is not currently installed. The published calculator and guide pages load Google AdSense for site verification, privacy messages, and advertising subject to Google’s approval and account settings. Advertising can help support the website. Policy and contact pages do not load the advertising script. We do not intentionally include calculator amounts in information sent to an advertising service.`) +
+      section(`privacy-analytics`, `Website traffic statistics`,
+        paragraph(`privacy-analytics-text`, `The production website uses Vercel Web Analytics on the calculator, guides, and information pages to understand aggregate traffic. It records page views and information such as referrer, approximate location, device type, browser, and operating system. Vercel uses a temporary identifier derived from the request without third-party cookies, and discards visitor-session identifiers after 24 hours.`) +
+        paragraph(`privacy-analytics-inputs`, `We remove query parameters and fragments from page URLs sent to analytics. We do not send calculator inputs or results, and do not track custom events. Google Analytics is not installed. Read ${link(`privacy-analytics-policy`, `https://vercel.com/docs/analytics/privacy-policy`, `Vercel’s Web Analytics privacy documentation`)} for details.`)) +
+      section(`privacy-google`, `Google advertising`,
+        paragraph(`privacy-google-default`, `The published calculator and guide pages load Google AdSense for site verification, privacy messages, and advertising subject to Google’s approval and account settings. Advertising can help support the website. Policy and contact pages do not load the advertising script. We do not intentionally include calculator amounts in information sent to an advertising service.`) +
         paragraph(`privacy-google-data`, `Loading the AdSense script sends information such as your IP address and browser information to Google, even if no advertisement is displayed. Google and its advertising partners may also receive the page address, device information, and interactions with ads. Google and other third-party advertising providers may use cookies or similar identifiers for measurement, fraud prevention, and, depending on settings and consent, personalized advertising based on your visits to this website and other websites.`) +
         paragraph(`privacy-google-resources`, `Read ${link(`privacy-google-policy-link`, `https://policies.google.com/technologies/partner-sites`, `how Google uses information from partner sites`)} and ${link(`privacy-google-main-link`, `https://policies.google.com/privacy`, `Google’s privacy policy`)} for details of their processing.`)) +
       section(`privacy-choices`, `Your privacy choices`,

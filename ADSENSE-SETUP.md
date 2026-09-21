@@ -16,7 +16,7 @@ Google's [readiness guidance](https://support.google.com/adsense/answer/7299563?
 
 ## 1. Review and publish the prepared site
 
-Review the diff, especially the publisher identity, Contact page, and Privacy Policy. The disclosures describe local storage for calculator inputs/theme, hosting logs, and Google advertising. Google Analytics is not installed. If your hosting configuration or other services collect additional data, update the policy to match.
+Review the diff, especially the publisher identity, Contact page, and Privacy Policy. The disclosures describe local storage for calculator inputs/theme, hosting logs, Vercel Web Analytics, and Google advertising. Google Analytics is not installed. If your hosting configuration or other services collect additional data, update the policy to match.
 
 For local export configuration, copy `.env.example` to `.env.local` and fill only the values you have. Hosting and shell variables take precedence over local environment files. Production configuration belongs in Vercel's environment settings; do not commit local environment files.
 
@@ -86,7 +86,9 @@ Add a Domain property in [Search Console](https://search.google.com/search-conso
 
 Use Search Console for search queries and indexing, and AdSense reports for impressions, earnings, and page RPM. Review ad density and user experience once you have representative traffic; no performance history is created by installing the script.
 
-Google Analytics is an optional separate account/integration step. If you add GA4, first choose an appropriate consent setup, update the privacy disclosures, and disable or carefully configure automatic collection that could send form values, query parameters, or other personal information. Calculator income values must not become analytics events. Google's [Consent Mode guide](https://developers.google.com/tag-platform/security/concepts/consent-mode) explains the difference between delaying tags until consent and sending cookieless measurements before consent.
+Vercel Web Analytics is integrated for production page views on the calculator, guides, and policy pages. Enable Web Analytics in the Vercel project's **Analytics** tab if needed, then deploy the reviewed changes. The integration removes query parameters and fragments from analytics page URLs and sends no calculator inputs, results, or custom events. See the [README](./README.md#web-analytics) for setup details.
+
+Google Analytics is not installed and remains an optional separate account/integration step. If you add GA4, first choose an appropriate consent setup, update the privacy disclosures, and disable or carefully configure automatic collection that could send form values, query parameters, or other personal information. Calculator income values must not become analytics events. Google's [Consent Mode guide](https://developers.google.com/tag-platform/security/concepts/consent-mode) explains the difference between delaying tags until consent and sending cookieless measurements before consent.
 
 ## Remaining owner actions
 

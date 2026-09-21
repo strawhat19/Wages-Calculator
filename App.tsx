@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import logo from './angular-ionic-calculator.png';
 import { Results } from './src/components/Results';
 import { AdSpace } from './src/components/AdSpace';
+import { SiteAnalytics } from './src/components/SiteAnalytics';
 import { BrandHome } from './src/components/BrandHome';
 import { HeaderMenu } from './src/components/HeaderMenu';
 import { MobileTabs } from './src/components/MobileTabs';
@@ -232,6 +233,7 @@ const App = () => {
         <StatusBar style={theme.isDark ? `light` : `dark`} />
         <CalculatorPage />
       </SafeAreaProvider>
+      <SiteAnalytics />
     </ThemeContext.Provider>
   );
 };

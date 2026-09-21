@@ -41,7 +41,7 @@ Website text uses the shared `--wages-font-family` setting in `site/content.scss
 
 ## Organic Search
 
-The homepage targets pay calculator, hourly pay calculator, and wage calculator searches with a descriptive title, heading, introduction, formula examples, and visible answers to common questions. Related pages cover specific conversion and pay-period questions:
+The homepage title is `Wages Calculator | Pay & Hourly Calculator`, keeping the app name first while describing its purpose. The heading, introduction, formula examples, and visible answers address pay calculator, hourly pay calculator, and wage calculator searches. Related pages cover specific conversion and pay-period questions:
 
 | Page | Search intent |
 | --- | --- |
@@ -66,6 +66,14 @@ Production exports include the owner's AdSense script for `ca-pub-83793011956775
 The script may activate Auto ads according to the Google dashboard, independently of `ADSENSE_ENABLED` and `ADSENSE_CONSENT_READY`. Those flags gate manual placements, which remain off by default. When enabled on the configured production hostname, manual ads appear after the homepage explanation and guide content; the mobile homepage placement is in Guides. Approval and consent messages require account-side setup. A production export retains its script when served on an alternative hostname or locally. Google Analytics is not installed.
 
 Follow [ADSENSE-SETUP.md](./ADSENSE-SETUP.md) for environment variables, the review process, consent configuration, deployment, and account steps. AdSense approval is decided by Google, and source changes alone do not activate an account.
+
+## Web Analytics
+
+Vercel Web Analytics is integrated for the production website, including the calculator, guides, and policy pages. The Expo web app uses `@vercel/analytics/react`; `/next` is for Next.js applications. Static documents load the same analytics service separately. Native apps and preview/development builds do not send page views.
+
+The integration removes query parameters and fragments from analytics page URLs and sends no calculator values or custom events. Vercel reports aggregate traffic without third-party cookies; see its [analytics privacy documentation](https://vercel.com/docs/analytics/privacy-policy). Google Analytics is not installed.
+
+In the Vercel project's **Analytics** tab, enable **Web Analytics** if it is not already enabled, then deploy the reviewed changes. Traffic appears after visitors load the deployed site. No analytics ID or additional environment variable is required.
 
 ## Deployment
 
