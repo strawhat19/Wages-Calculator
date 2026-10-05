@@ -1,4 +1,4 @@
-import { homePage, homeContent, siteLinks } from '../../site/content.mjs';
+import { homeContent, siteLinks } from '../../site/content.mjs';
 
 const footerLinks = [
   { href: `/about/`, label: `About` },
@@ -15,23 +15,39 @@ const resultHelpLinks = [
 ];
 
 export const SiteResultHelp = () => (
-  <aside id={`calculator-result-help`} className={`site-results-help`} aria-label={`Understand your pay results`}>
-    <p id={`calculator-result-help-copy`} className={`site-results-help-copy`}>
-      {`Monthly pay is an annual average. Weekly pay is per paid week. Take-home uses only your entered percentage.`}
-    </p>
-    <nav id={`calculator-result-help-nav`} className={`site-nav`} aria-label={`Pay result explanations`}>
-      {resultHelpLinks.map((link, index) => (
-        <a
-          key={link.href}
-          href={link.href}
-          className={`site-result-help-link`}
-          id={`calculator-result-help-link-${index}`}
-        >
-          {link.label}{` →`}
-        </a>
-      ))}
-    </nav>
-  </aside>
+  <details
+    id={`calculator-result-help`}
+    className={`site-results-help`}
+    aria-label={`Understand your pay results`}
+  >
+    <summary id={`calculator-result-help-toggle`} className={`site-results-help-toggle`}>
+      {`How these results are calculated`}
+      <span
+        aria-hidden
+        id={`calculator-result-help-toggle-icon`}
+        className={`site-results-help-toggle-icon`}
+      >
+        {`＋`}
+      </span>
+    </summary>
+    <div id={`calculator-result-help-content`} className={`site-results-help-content`}>
+      <p id={`calculator-result-help-copy`} className={`site-results-help-copy`}>
+        {`Monthly pay is an annual average. Weekly pay is per paid week. Take-home uses only your entered percentage.`}
+      </p>
+      <nav id={`calculator-result-help-nav`} className={`site-nav`} aria-label={`Pay result explanations`}>
+        {resultHelpLinks.map((link, index) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className={`site-result-help-link`}
+            id={`calculator-result-help-link-${index}`}
+          >
+            {link.label}{` →`}
+          </a>
+        ))}
+      </nav>
+    </div>
+  </details>
 );
 
 export const SiteGuideDirectory = () => (
@@ -54,12 +70,44 @@ export const SiteGuideDirectory = () => (
 
 export const SiteNavigation = () => (
   <header id={`calculator-introduction`} className={`calculator-introduction`}>
-    <h1 id={`calculator-page-title`} className={`calculator-page-title`}>
-      {homePage.heading}
-    </h1>
-    <p id={`calculator-page-description`} className={`calculator-page-description`}>
-      {homePage.intro}
-    </p>
+    <div id={`calculator-intro-copy`} className={`calculator-intro-copy`}>
+      <p id={`calculator-eyebrow`} className={`calculator-eyebrow`}>
+        {`A little clarity goes a long way`}
+      </p>
+      <h1 id={`calculator-page-title`} className={`calculator-page-title`}>
+        {`Wages calculator`}
+      </h1>
+      <p id={`calculator-page-description`} className={`calculator-page-description`}>
+        {`Turn your hourly pay or salary into a clear picture of what you earn.`}
+      </p>
+    </div>
+    <div
+      id={`calculator-intro-trust`}
+      className={`calculator-intro-trust`}
+      aria-label={`Free calculator with instant results, no sign-up`}
+    >
+      <span aria-hidden id={`calculator-trust-icon`} className={`calculator-trust-icon`}>
+        <svg
+          fill={`none`}
+          viewBox={`0 0 24 24`}
+          stroke={`currentColor`}
+          strokeWidth={1.8}
+          strokeLinecap={`round`}
+          strokeLinejoin={`round`}
+          id={`calculator-trust-zap`}
+          className={`calculator-trust-zap`}
+        >
+          <path
+            id={`calculator-trust-zap-path`}
+            className={`calculator-trust-zap-path`}
+            d={`M13 2 3 14h8l-1 8L21 10h-8l1-8Z`}
+          />
+        </svg>
+      </span>
+      <span id={`calculator-trust-label`} className={`calculator-trust-label`}>
+        {`Free to use. Yours to keep.`}
+      </span>
+    </div>
   </header>
 );
 

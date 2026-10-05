@@ -1,0 +1,560 @@
+$ink: #20382d;
+$green: #315e49;
+$border: #e2e8df;
+
+.app-home-shell {
+  --home-ink: #{$ink};
+  --home-green: #{$green};
+  --home-border: #{$border};
+  --home-muted: #737d74;
+  --home-surface: #ffffff;
+  --home-input: #fbfcfa;
+  --home-soft: #f3f6ef;
+  --home-summary: #eaf2e5;
+  --home-background: #f7f8f4;
+  --home-shadow: 0 12px 48px rgba(35, 57, 39, 0.055), 0 2px 6px rgba(35, 57, 39, 0.025);
+  background-color: var(--home-background) !important;
+
+  .app-keyboard-area,
+  .app-scroll { background-color: transparent !important; }
+
+  .app-scroll > div { padding-block: 24px !important; }
+
+  .page-content {
+    gap: 22px !important;
+    margin-inline: auto;
+    max-width: 1180px;
+    padding-inline: 28px !important;
+    container-type: inline-size;
+    container-name: calculator-home;
+  }
+
+  .calculator-introduction {
+    gap: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .calculator-intro-copy { min-width: 0; }
+
+  .calculator-eyebrow {
+    margin: 0 0 7px;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--home-green);
+  }
+
+  .calculator-page-title {
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    color: var(--home-ink);
+  }
+
+  .calculator-page-description {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--home-muted);
+  }
+
+  .calculator-intro-trust {
+    gap: 8px;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    color: var(--home-green);
+  }
+
+  .calculator-trust-icon { width: 16px; height: 16px; }
+  .calculator-trust-label { font-size: 11px; line-height: 18px; }
+  .page-layout { gap: 0 !important; min-height: 0 !important; }
+
+  .calculator-layout {
+    flex: none !important;
+    width: 100% !important;
+    display: grid !important;
+    border-radius: 20px;
+    overflow: hidden !important;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    border: 1px solid var(--home-border) !important;
+    background-color: var(--home-surface) !important;
+    box-shadow: var(--home-shadow);
+  }
+
+  .calculator-inputs,
+  .calculator-results {
+    flex: none !important;
+    min-width: 0;
+    width: auto !important;
+  }
+
+  .calculator-results {
+    border: 0 !important;
+    border-left: 1px solid var(--home-border) !important;
+  }
+
+  .income-card {
+    gap: 18px;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .income-heading,
+  .income-heading-copy,
+  .breakdown-heading-row {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .income-heading,
+  .breakdown-heading-row { justify-content: space-between; }
+
+  .income-heading-step {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    font-size: 10px;
+    border-radius: 50%;
+    place-items: center;
+    color: var(--home-green);
+    background: var(--home-soft);
+  }
+
+  .income-heading-title,
+  .breakdown-heading {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    color: var(--home-ink);
+  }
+
+  .income-save-wage {
+    min-height: 36px !important;
+    padding: 7px 10px !important;
+    border-radius: 8px !important;
+    border-color: var(--home-border) !important;
+    background-color: var(--home-surface) !important;
+  }
+
+  .income-save-wage-label { font-size: 11px !important; color: var(--home-green) !important; }
+  .income-save-wage-icon { stroke: var(--home-green); }
+
+  .income-pay-row {
+    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .number-field { gap: 7px !important; }
+
+  .input-label {
+    font-size: 11px !important;
+    line-height: 15px;
+    font-weight: 500 !important;
+    color: var(--home-muted) !important;
+  }
+
+  .number-control {
+    gap: 6px !important;
+    min-height: 46px !important;
+    padding-inline: 12px !important;
+    border-radius: 9px !important;
+    border-color: var(--home-border) !important;
+    background-color: var(--home-input) !important;
+
+    &:focus-within {
+      border-color: var(--home-green) !important;
+      background-color: var(--home-surface) !important;
+    }
+  }
+
+  .number-input {
+    font-size: 18px !important;
+    line-height: 26px;
+    font-weight: 500 !important;
+    letter-spacing: -0.035em;
+    color: var(--home-ink) !important;
+  }
+
+  .input-prefix,
+  .input-suffix { font-size: 12px !important; color: var(--home-muted) !important; }
+
+  .income-pay-row .number-control { min-height: 54px !important; }
+  .income-pay-row .number-input { font-size: 24px !important; line-height: 32px; }
+  .income-pay-row .input-prefix { font-size: 17px !important; }
+
+  .income-pay-row[data-income-mode='hourly'] #hourly-rate-control,
+  .income-pay-row[data-income-mode='salary'] #annual-salary-control {
+    border-color: var(--home-green) !important;
+    background-color: var(--home-surface) !important;
+  }
+
+  .income-calculation-label {
+    margin: -8px 0 0;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--home-muted);
+  }
+
+  .income-schedule {
+    gap: 12px;
+    display: grid;
+    padding-top: 18px;
+    border-top: 1px solid var(--home-border);
+  }
+
+  .income-schedule-heading { gap: 7px; display: flex; align-items: center; }
+  .income-schedule-icon,
+  .income-storage-icon { flex-shrink: 0; stroke: var(--home-green); }
+
+  .income-schedule-title {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 500;
+    color: var(--home-ink);
+  }
+
+  .schedule-input-row {
+    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .income-tax-row {
+    gap: 16px;
+    padding: 12px;
+    display: grid;
+    border-radius: 12px;
+    align-items: center;
+    background: var(--home-soft);
+    grid-template-columns: minmax(0, 112px) minmax(0, 1fr);
+  }
+
+  .income-tax-row .number-control { min-height: 40px !important; background-color: var(--home-surface) !important; }
+
+  .income-tax-note {
+    margin: 0;
+    font-size: 11px;
+    line-height: 18px;
+    color: var(--home-muted);
+  }
+
+  .income-storage-note { gap: 7px; display: flex; margin-top: auto; align-items: center; }
+
+  .income-save-status {
+    margin: 0;
+    font-size: 10px;
+    line-height: 16px;
+    color: var(--home-muted);
+  }
+
+  .schedule-warning { margin: 0; font-size: 11px; line-height: 17px; color: #b54e46; }
+  .income-mobile-summary { display: none; }
+
+  .results-column {
+    gap: 12px;
+    min-width: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    color: var(--home-ink);
+  }
+
+  .breakdown-heading-row { min-height: 36px; }
+
+  .breakdown-live {
+    gap: 5px;
+    display: flex;
+    font-size: 10px;
+    line-height: 16px;
+    align-items: center;
+    color: var(--home-green);
+  }
+
+  .breakdown-live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--home-green); }
+
+  .pay-summary {
+    gap: 20px;
+    padding: 14px 18px;
+    display: flex;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--home-summary);
+  }
+
+  .pay-summary-copy { min-width: 0; }
+  .pay-summary-label { margin: 0; font-size: 11px; line-height: 16px; color: var(--home-green); }
+
+  .pay-summary-value {
+    margin: 3px 0;
+    font-size: 36px;
+    line-height: 42px;
+    font-weight: 600;
+    letter-spacing: -0.055em;
+    overflow-wrap: anywhere;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pay-summary-context { margin: 0; font-size: 10px; line-height: 15px; color: var(--home-muted); }
+  .pay-summary-share { width: 92px; flex-shrink: 0; text-align: right; }
+  .pay-summary-share-value { margin: 0; font-size: 20px; line-height: 26px; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+  .pay-summary-share-label { margin: 2px 0 10px; font-size: 10px; line-height: 14px; color: var(--home-muted); }
+  .pay-summary-meter { height: 4px; overflow: hidden; border-radius: 4px; background: var(--home-border); }
+  .pay-summary-meter-fill { height: 100%; display: block; border-radius: inherit; background: var(--home-green); transition: width 260ms ease; }
+
+  .income-table {
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+    border-collapse: separate;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .income-table-caption {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  .income-table th,
+  .income-table td { padding: 10px 9px; line-height: 18px; }
+
+  .income-table-header th {
+    padding-block: 7px;
+    text-align: right;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--home-muted);
+
+    &:first-child { width: 19%; text-align: left; }
+  }
+
+  .income-table-row {
+    th,
+    td {
+      font-size: 13px;
+      border-bottom: 1px solid var(--home-border);
+      transition: background-color 180ms ease;
+    }
+
+    th { text-align: left; font-weight: 500; }
+    td { text-align: right; overflow-wrap: anywhere; }
+    &:last-child th,
+    &:last-child td { border-bottom: 0; }
+  }
+
+  .income-table-gross { color: var(--home-ink); }
+  .income-table-tax { color: var(--home-muted); }
+  .income-table-net { font-weight: 600; color: var(--home-green); }
+
+  .income-table-row-highlight {
+    th,
+    td { border-color: transparent; background: var(--home-soft); }
+    th { border-radius: 8px 0 0 8px; }
+    td:last-child { border-radius: 0 8px 8px 0; }
+  }
+
+  .breakdown-assumptions {
+    margin: 0;
+    font-size: 10px;
+    line-height: 16px;
+    color: var(--home-muted);
+  }
+
+  .site-results-help { font-size: 11px; color: var(--home-muted); }
+
+  .site-results-help-toggle {
+    gap: 8px;
+    display: flex;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--home-green);
+
+    &::-webkit-details-marker { display: none; }
+  }
+
+  .site-results-help-toggle-icon { font-size: 16px; line-height: 18px; transition: transform 220ms ease; }
+  .site-results-help[open] .site-results-help-toggle-icon { transform: rotate(45deg); }
+  .site-results-help-content { padding-top: 12px; }
+  .site-result-help-link { color: var(--home-green); text-underline-offset: 3px; }
+
+  .mobile-pay-action { padding: 0 18px 18px !important; }
+
+  .mobile-view-pay {
+    min-height: 44px !important;
+    border-radius: 10px !important;
+    border-color: var(--home-green) !important;
+    background-color: var(--home-green) !important;
+  }
+
+  .guides-panel { margin-top: 10px; }
+  .calculator-supporting-content { color: var(--home-ink); }
+
+  .calculator-supporting-content .site-home-copy {
+    margin: 0;
+    padding-top: 28px;
+    border-top: 1px solid var(--home-border);
+  }
+
+  .calculator-supporting-content .site-title { max-width: 30ch; font-size: 27px; letter-spacing: -0.035em; }
+  .calculator-supporting-content .site-intro { font-size: 14px; line-height: 1.8; }
+  .calculator-supporting-content .site-heading { font-size: 19px; }
+  .calculator-supporting-content .site-paragraph,
+  .calculator-supporting-content .site-list { font-size: 14px; }
+  .calculator-supporting-content .site-guide-link { border-radius: 10px; }
+  .calculator-supporting-content .site-formula,
+  .calculator-supporting-content .site-note { border-radius: 0 10px 10px 0; }
+}
+
+.app-theme-dark .app-home-shell {
+  --home-ink: #e4ede1;
+  --home-green: #b6d5a5;
+  --home-border: #354337;
+  --home-muted: #a0aea0;
+  --home-surface: #1d2720;
+  --home-input: #19231d;
+  --home-soft: #253229;
+  --home-summary: #2b3d2c;
+  --home-background: #151e18;
+  --home-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
+
+  .mobile-view-pay-label { color: #172619 !important; }
+  .mobile-view-pay-icon { stroke: #172619; }
+  .schedule-warning { color: #f19186; }
+}
+
+@container calculator-home (max-width: 850px) {
+  .app-home-shell {
+    .calculator-layout { grid-template-columns: minmax(0, 1fr) !important; }
+    .calculator-results { border-left: 0 !important; border-top: 1px solid var(--home-border) !important; }
+    .calculator-intro-trust { display: none; }
+    .income-card { gap: 16px; }
+    .income-storage-note { margin-top: 0; }
+    .income-schedule { padding-top: 16px; }
+  }
+}
+
+@media (min-width: 768px) and (max-height: 800px) {
+  .app-home-shell {
+    .app-scroll > div { padding-block: 14px !important; }
+    .page-content { gap: 16px !important; }
+    .calculator-eyebrow { display: none; }
+    .calculator-page-title { font-size: 30px; }
+    .calculator-page-description { margin-top: 5px; }
+    .income-card { gap: 16px; padding: 20px; }
+    .results-column { gap: 10px; padding: 20px; }
+    .pay-summary { padding: 12px 16px; }
+    .pay-summary-value { font-size: 32px; line-height: 38px; }
+    .income-table-row th,
+    .income-table-row td { padding-block: 8px; }
+  }
+}
+
+@media (max-width: 767px) {
+  .app-home-shell {
+    .app-scroll > div { padding-block: 14px !important; }
+    .page-content { gap: 14px !important; padding-inline: 14px !important; }
+    .calculator-eyebrow,
+    .calculator-intro-trust,
+    .calculator-page-description { display: none; }
+    .calculator-page-title { font-size: 24px; line-height: 30px; }
+    .calculator-layout { border-radius: 16px; grid-template-columns: minmax(0, 1fr) !important; }
+    .calculator-inputs,
+    .calculator-results { border: 0 !important; }
+    .income-card { gap: 16px; height: auto; padding: 18px; }
+    .income-heading-title,
+    .breakdown-heading { font-size: 15px; }
+    .income-heading-step { width: 24px; height: 24px; }
+    .income-save-wage { padding-inline: 8px !important; }
+    .income-pay-row { gap: 10px; }
+    .income-pay-row .number-input { font-size: 22px !important; }
+    .income-schedule { gap: 10px; padding-top: 14px; }
+    .schedule-input-row { gap: 8px; }
+    .schedule-input-row .number-control { padding-inline: 9px !important; }
+    .schedule-input-row .input-label { font-size: 10px !important; white-space: nowrap; }
+    .income-tax-row { gap: 14px; grid-template-columns: minmax(0, 100px) minmax(0, 1fr); }
+    .income-storage-note { margin-top: 0; }
+
+    .income-mobile-summary {
+      gap: 12px;
+      display: flex;
+      padding: 14px;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--home-summary);
+    }
+
+    .income-mobile-summary-copy { min-width: 0; }
+    .income-mobile-summary-label { margin: 0; font-size: 11px; line-height: 16px; color: var(--home-ink); }
+    .income-mobile-summary-note { margin: 3px 0 0; font-size: 9px; line-height: 14px; color: var(--home-muted); }
+
+    .income-monthly-net {
+      margin: 0;
+      min-width: 0;
+      font-size: 23px;
+      line-height: 30px;
+      font-weight: 600;
+      text-align: right;
+      letter-spacing: -0.05em;
+      overflow-wrap: anywhere;
+      color: var(--home-ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .results-column { gap: 12px; padding: 18px; }
+    .pay-summary { gap: 12px; padding: 14px; }
+    .pay-summary-value { font-size: 32px; line-height: 38px; }
+    .pay-summary-share { width: 60px; }
+    .income-table th,
+    .income-table td { padding: 10px 5px; }
+    .income-table-row th,
+    .income-table-row td { font-size: 12px; }
+    .income-table-header th { font-size: 9px; }
+    .guides-panel { margin-top: 0; }
+    .calculator-supporting-content .site-home-copy { padding-top: 18px; }
+  }
+}
+
+@media (max-width: 767px) and (max-height: 740px) {
+  .app-home-shell {
+    .app-scroll > div { padding-block: 10px !important; }
+    .page-content { gap: 10px !important; }
+    .income-card { gap: 12px; padding: 14px; }
+    .income-schedule { gap: 8px; padding-top: 12px; }
+    .income-tax-row { padding: 10px; }
+    .income-mobile-summary { padding: 10px 12px; }
+    .mobile-pay-action { padding: 0 14px 14px !important; }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-home-shell {
+    .income-save-wage:hover { opacity: 1 !important; background-color: var(--home-soft) !important; }
+    .income-table-row:hover th,
+    .income-table-row:hover td { background: var(--home-soft); }
+    .site-results-help-toggle:hover { color: var(--home-ink); }
+  }
+}

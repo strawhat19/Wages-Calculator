@@ -41,7 +41,7 @@ const CalculatorPage = () => {
   } = useSavedWages();
   const savedSidebarDocked = width >= 1100;
   const savedExpanded = savedOpen && savedWages.length > 0;
-  const savedSidebarWidth = savedSidebarDocked && savedExpanded
+  const savedSidebarWidth = savedWages.length === 0 ? 0 : savedSidebarDocked && savedExpanded
     ? SAVED_WAGES_EXPANDED_WIDTH : SAVED_WAGES_COLLAPSED_WIDTH;
   const compact = width - savedSidebarWidth < 900;
   const mobile = Platform.OS === `web` && width < 768;
@@ -52,7 +52,7 @@ const CalculatorPage = () => {
     : savedStorageStatus === `unavailable` ? `Saved for this session. Device storage is unavailable.`
     : savedStorageStatus === `saving` ? `Saving wage…` : `Wage saved.`;
   const showCalculator = !mobile || activeTab === `income` || activeTab === `results`;
-  const shellClass = `app-safe-area${mobile ? ` app-mobile-shell` : ``}`;
+  const shellClass = `app-safe-area${Platform.OS === `web` ? ` app-home-shell` : ``}${mobile ? ` app-mobile-shell` : ``}`;
   const minimumHeight = compact ? 0 : Math.max(420, height - footerHeight.web - (Platform.OS === `web` ? 220 : 100));
   useMobileViewport(mobile);
 
@@ -163,7 +163,7 @@ const CalculatorPage = () => {
         </Box>
       </Box>
       <Box id={`app-workspace`} className={`app-workspace`} style={styles.workspace}>
-        <SavedWagesSidebar
+        {savedWages.length > 0 && <SavedWagesSidebar
           entries={savedWages}
           ready={savedReady}
           open={savedExpanded}
@@ -174,7 +174,7 @@ const CalculatorPage = () => {
           onRemove={removeSavedWage}
           selectedId={selectedSavedId}
           storageStatus={savedStorageStatus}
-        />
+        />}
         <KeyboardAvoidingView
           {...elementProps(`app-keyboard-area`)}
           style={[styles.fill, styles.workspaceMain, webClass(`app-keyboard-area`)]}
