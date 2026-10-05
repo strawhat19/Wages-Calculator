@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import { Save } from 'lucide-react-native';
 import { StyleSheet } from 'react-native';
-import { Box, Label, NumberField } from './ui';
+import { Box, Label, Button, NumberField } from './ui';
 import { useTheme, type Palette } from '../styles/theme';
 import type { CalculatorInputs } from '../lib/calculator';
 import { calculateWages, numericValue } from '../lib/calculator';
 
 type IncomeCardProps = {
+  onSave: () => void;
+  saveReady: boolean;
+  saveMessage: string;
   compact: boolean;
   inputs: CalculatorInputs;
   onChange: <K extends keyof CalculatorInputs>(key: K, value: CalculatorInputs[K]) => void;
@@ -13,7 +17,7 @@ type IncomeCardProps = {
 
 const displayAmount = (value: number) => String(Math.round(value * 100) / 100);
 
-export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
+export const IncomeCard = ({ inputs, compact, onSave, onChange, saveReady, saveMessage }: IncomeCardProps) => {
   const [panelWidth, setPanelWidth] = useState(0);
   const { colors } = useTheme();
   const styles = createStyles(colors);
@@ -37,6 +41,15 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
         <Label className={`income-heading-title`} style={[styles.title, compact && styles.compactTitle]} accessibilityRole={`header`}>
           {`Income`}
         </Label>
+        <Button
+          icon={Save}
+          label={`Save`}
+          onPress={onSave}
+          disabled={!saveReady}
+          id={`income-save-wage`}
+          className={`income-save-wage`}
+          accessibilityLabel={`Save this wage to your saved wages`}
+        />
       </Box>
       <Box className={`income-pay-row`} style={[styles.fieldRow, stackedPayFields && styles.stackedPayRow]}>
         <NumberField
@@ -47,6 +60,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           stacked={stackedPayFields}
           label={`Hourly rate`}
           value={hourlyValue}
+          onSubmit={onSave}
           onChange={value => changeIncome(`hourlyRate`, value)}
         />
         <NumberField
@@ -57,6 +71,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           stacked={stackedPayFields}
           label={`Annual salary`}
           value={salaryValue}
+          onSubmit={onSave}
           onChange={value => changeIncome(`annualSalary`, value)}
         />
       </Box>
@@ -68,6 +83,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           id={`weekly-hours`}
           label={`Hours per week`}
           value={inputs.weeklyHours}
+          onSubmit={onSave}
           onChange={value => onChange(`weeklyHours`, value)}
         />
         <NumberField
@@ -77,6 +93,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           id={`estimated-tax`}
           label={`Estimated tax rate`}
           value={inputs.taxRate}
+          onSubmit={onSave}
           onChange={value => onChange(`taxRate`, value)}
         />
       </Box>
@@ -87,6 +104,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           id={`work-days`}
           label={`Days per week`}
           value={inputs.daysPerWeek}
+          onSubmit={onSave}
           onChange={value => onChange(`daysPerWeek`, value)}
         />
         <NumberField
@@ -95,6 +113,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           id={`paid-weeks`}
           label={`Paid weeks per year`}
           value={inputs.weeksPerYear}
+          onSubmit={onSave}
           onChange={value => onChange(`weeksPerYear`, value)}
         />
       </Box>
@@ -103,6 +122,16 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
           {`Edit hourly rate or annual salary`}
         </Label>
       </Box>
+      {saveMessage && (
+        <Label
+          id={`income-save-status`}
+          className={`income-save-status`}
+          style={styles.explanationText}
+          accessibilityLiveRegion={`polite`}
+        >
+          {saveMessage}
+        </Label>
+      )}
       {incompleteSchedule && (
         <Label className={`schedule-warning`} style={styles.warning} accessibilityRole={`alert`}>
           {`Hours, days, and paid weeks must be above zero for a complete breakdown.`}
@@ -113,7 +142,7 @@ export const IncomeCard = ({ inputs, compact, onChange }: IncomeCardProps) => {
 };
 
 const createStyles = (colors: Palette) => StyleSheet.create({
-  heading: { minHeight: 22 },
+  heading: { gap: 12, minHeight: 22, flexDirection: `row`, alignItems: `center`, justifyContent: `space-between` },
   stackedPayRow: { flexDirection: `column` },
   compactTitle: { fontSize: 16 },
   explanation: { flexDirection: `row` },

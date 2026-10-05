@@ -1,4 +1,5 @@
 import { Box, Label } from './ui';
+import { SiteResultHelp } from './SiteContent';
 import { useTheme, type Palette } from '../styles/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { calculateWages, formatMoney, type CalculatorInputs } from '../lib/calculator';
@@ -106,6 +107,7 @@ export const Results = ({ inputs, compact }: ResultsProps) => {
         >
           {`USD · ${calculation.taxRate}% flat tax estimate. Actual take-home pay depends on taxes, benefits, and other deductions.`}
         </Label>
+        <SiteResultHelp />
       </Box>
     </Box>
   );

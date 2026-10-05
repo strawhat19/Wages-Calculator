@@ -3,9 +3,36 @@ import { homePage, homeContent, siteLinks } from '../../site/content.mjs';
 const footerLinks = [
   { href: `/about/`, label: `About` },
   { href: `/privacy/`, label: `Privacy Policy` },
-  { href: `/terms/`, label: `Terms of Service` },
+  { href: `/terms/`, label: `Terms of Use` },
   { href: `/contact/`, label: `Contact` },
+  { href: `/methodology/`, label: `Calculation methodology` },
 ];
+
+const resultHelpLinks = [
+  { href: `/methodology/`, label: `Calculation method` },
+  { href: `/guides/check-your-paycheck/`, label: `Compare a paycheck` },
+  { href: `/guides/work-schedules/#schedule-paycheck`, label: `Monthly averages and pay dates` },
+];
+
+export const SiteResultHelp = () => (
+  <aside id={`calculator-result-help`} className={`site-results-help`} aria-label={`Understand your pay results`}>
+    <p id={`calculator-result-help-copy`} className={`site-results-help-copy`}>
+      {`Monthly pay is an annual average. Weekly pay is per paid week. Take-home uses only your entered percentage.`}
+    </p>
+    <nav id={`calculator-result-help-nav`} className={`site-nav`} aria-label={`Pay result explanations`}>
+      {resultHelpLinks.map((link, index) => (
+        <a
+          key={link.href}
+          href={link.href}
+          className={`site-result-help-link`}
+          id={`calculator-result-help-link-${index}`}
+        >
+          {link.label}{` →`}
+        </a>
+      ))}
+    </nav>
+  </aside>
+);
 
 export const SiteGuideDirectory = () => (
   <nav id={`mobile-guide-directory`} className={`mobile-guide-directory`} aria-label={`Pay guides`}>

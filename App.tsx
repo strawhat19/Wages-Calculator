@@ -12,6 +12,8 @@ import { IncomeCard } from './src/components/IncomeCard';
 import { Box, Label, Button } from './src/components/ui';
 import { useCalculator } from './src/hooks/useCalculator';
 import { X, Sun, Moon, RotateCcw, ChartNoAxesColumn } from 'lucide-react-native';
+import { SavedWagesSidebar, SAVED_WAGES_COLLAPSED_WIDTH, SAVED_WAGES_EXPANDED_WIDTH } from './src/components/SavedWagesSidebar';
+import { useSavedWages, type SavedWage } from './src/hooks/useSavedWages';
 import { Footer, footerHeight } from './src/components/Footer';
 import { useMobileViewport } from './src/hooks/useMobileViewport';
 import { useMobileNavigation, type MobileTab } from './src/hooks/useMobileNavigation';
@@ -24,17 +26,39 @@ const CalculatorPage = () => {
   const { width, height } = useWindowDimensions();
   const scroll = useRef<ScrollView>(null);
   const [resetOpen, setResetOpen] = useState(false);
+  const [savedOpen, setSavedOpen] = useState(false);
+  const [showSaveNotice, setShowSaveNotice] = useState(false);
+  const [selectedSavedId, setSelectedSavedId] = useState<string | null>(null);
   const { colors, isDark, toggleTheme } = useTheme();
   const { activeTab, navigate, goHome } = useMobileNavigation();
-  const { inputs, ready, reset, updateInput, storageStatus } = useCalculator();
-  const compact = width < 900;
+  const { inputs, ready, reset, updateInput, restoreInputs, storageStatus } = useCalculator();
+  const {
+    savedWages,
+    saveWage,
+    removeWage,
+    ready: savedReady,
+    storageStatus: savedStorageStatus,
+  } = useSavedWages();
+  const savedSidebarDocked = width >= 1100;
+  const savedExpanded = savedOpen && savedWages.length > 0;
+  const savedSidebarWidth = savedSidebarDocked && savedExpanded
+    ? SAVED_WAGES_EXPANDED_WIDTH : SAVED_WAGES_COLLAPSED_WIDTH;
+  const compact = width - savedSidebarWidth < 900;
   const mobile = Platform.OS === `web` && width < 768;
   const narrowHeader = width < 400;
   const styles = createStyles(colors);
+  const saveReady = ready && savedReady;
+  const saveMessage = !showSaveNotice ? ``
+    : savedStorageStatus === `unavailable` ? `Saved for this session. Device storage is unavailable.`
+    : savedStorageStatus === `saving` ? `Saving wage…` : `Wage saved.`;
   const showCalculator = !mobile || activeTab === `income` || activeTab === `results`;
   const shellClass = `app-safe-area${mobile ? ` app-mobile-shell` : ``}`;
   const minimumHeight = compact ? 0 : Math.max(420, height - footerHeight.web - (Platform.OS === `web` ? 220 : 100));
   useMobileViewport(mobile);
+
+  useEffect(() => {
+    if (savedReady) setSavedOpen(savedWages.length > 0);
+  }, [savedReady, savedWages.length]);
 
   useEffect(() => {
     if (!mobile) return;
@@ -58,8 +82,36 @@ const CalculatorPage = () => {
   };
   const confirmReset = () => {
     reset();
+    setSelectedSavedId(null);
+    setShowSaveNotice(false);
     setResetOpen(false);
     if (mobile) navigate(`income`);
+  };
+  const changeInput: typeof updateInput = (key, value) => {
+    setSelectedSavedId(null);
+    setShowSaveNotice(false);
+    updateInput(key, value);
+  };
+  const saveCurrentWage = () => {
+    if (!saveReady) return;
+    const id = saveWage(inputs);
+    if (!id) return;
+    setSelectedSavedId(id);
+    setShowSaveNotice(true);
+    setSavedOpen(true);
+    Keyboard.dismiss();
+  };
+  const selectSavedWage = (entry: SavedWage) => {
+    restoreInputs(entry.inputs);
+    setSelectedSavedId(entry.id);
+    setShowSaveNotice(false);
+    if (!savedSidebarDocked) setSavedOpen(false);
+    openHome();
+  };
+  const removeSavedWage = (id: string) => {
+    removeWage(id);
+    if (selectedSavedId === id) setSelectedSavedId(null);
+    setShowSaveNotice(false);
   };
 
   return (
@@ -110,113 +162,134 @@ const CalculatorPage = () => {
           </Box>
         </Box>
       </Box>
-      <KeyboardAvoidingView
-        {...elementProps(`app-keyboard-area`)}
-        style={[styles.fill, webClass(`app-keyboard-area`)]}
-        behavior={Platform.OS === `ios` ? `padding` : undefined}
-      >
-        <ScrollView
-          ref={scroll}
-          {...elementProps(`app-scroll`)}
-          keyboardDismissMode={`on-drag`}
-          keyboardShouldPersistTaps={`handled`}
-          style={[styles.fill, webClass(`app-scroll`)]}
-          contentContainerStyle={[styles.scrollContent, compact && styles.compactScroll]}
+      <Box id={`app-workspace`} className={`app-workspace`} style={styles.workspace}>
+        <SavedWagesSidebar
+          entries={savedWages}
+          ready={savedReady}
+          open={savedExpanded}
+          onClose={() => setSavedOpen(false)}
+          onToggle={() => setSavedOpen(current => !current)}
+          docked={savedSidebarDocked}
+          onSelect={selectSavedWage}
+          onRemove={removeSavedWage}
+          selectedId={selectedSavedId}
+          storageStatus={savedStorageStatus}
+        />
+        <KeyboardAvoidingView
+          {...elementProps(`app-keyboard-area`)}
+          style={[styles.fill, styles.workspaceMain, webClass(`app-keyboard-area`)]}
+          behavior={Platform.OS === `ios` ? `padding` : undefined}
         >
-          <Box className={`page-content`} style={[styles.pageContent, compact && styles.compactContent]}>
-            {Platform.OS === `web` && (
-              <Box className={`calculator-page-intro`} style={mobile && activeTab !== `income` && styles.hidden}>
-                <SiteNavigation />
-              </Box>
-            )}
-            {resetOpen && (
-              <Box className={`reset-confirmation`} style={styles.resetConfirmation}>
-                <Label className={`reset-confirmation-title`} style={styles.resetTitle}>
-                  {`Restore the example income?`}
-                </Label>
-                <Box className={`reset-confirmation-actions`} style={styles.resetActions}>
-                  <Button icon={X} label={`Cancel`} className={`reset-cancel`} onPress={() => setResetOpen(false)} />
-                  <Button icon={RotateCcw} label={`Reset`} variant={`danger`} className={`reset-confirm`} onPress={confirmReset} />
+          <ScrollView
+            ref={scroll}
+            {...elementProps(`app-scroll`)}
+            keyboardDismissMode={`on-drag`}
+            keyboardShouldPersistTaps={`handled`}
+            style={[styles.fill, webClass(`app-scroll`)]}
+            contentContainerStyle={[styles.scrollContent, compact && styles.compactScroll]}
+          >
+            <Box className={`page-content`} style={[styles.pageContent, compact && styles.compactContent]}>
+              {Platform.OS === `web` && (
+                <Box className={`calculator-page-intro`} style={mobile && activeTab !== `income` && styles.hidden}>
+                  <SiteNavigation />
                 </Box>
+              )}
+              {resetOpen && (
+                <Box className={`reset-confirmation`} style={styles.resetConfirmation}>
+                  <Label className={`reset-confirmation-title`} style={styles.resetTitle}>
+                    {`Restore the example income?`}
+                  </Label>
+                  <Box className={`reset-confirmation-actions`} style={styles.resetActions}>
+                    <Button icon={X} label={`Cancel`} className={`reset-cancel`} onPress={() => setResetOpen(false)} />
+                    <Button icon={RotateCcw} label={`Reset`} variant={`danger`} className={`reset-confirm`} onPress={confirmReset} />
+                  </Box>
+                </Box>
+              )}
+              <Box className={`page-layout`} style={[styles.pageLayout, { minHeight: minimumHeight }, compact && styles.compactPageLayout, !showCalculator && styles.hidden]}>
+                {ready ? (
+                  <Box className={`calculator-layout`} style={[styles.calculatorLayout, compact && styles.stackedLayout]}>
+                    <Box id={`income`} className={`calculator-inputs`} style={[styles.inputColumn, compact && styles.stackedColumn, mobile && activeTab !== `income` && styles.hidden]}>
+                      <IncomeCard
+                        inputs={inputs}
+                        compact={compact}
+                        onChange={changeInput}
+                        onSave={saveCurrentWage}
+                        saveReady={saveReady}
+                        saveMessage={saveMessage}
+                      />
+                      {mobile && (
+                        <Box className={`mobile-pay-action`} style={styles.mobilePayAction}>
+                          <Button
+                            variant={`primary`}
+                            icon={ChartNoAxesColumn}
+                            label={`View pay breakdown`}
+                            className={`mobile-view-pay`}
+                            onPress={() => changeTab(`results`)}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                    <Box id={`results`} className={`calculator-results`} style={[styles.resultsColumn, compact && styles.stackedColumn, compact && styles.stackedResults, mobile && styles.mobileResults, mobile && activeTab !== `results` && styles.hidden]}>
+                      <Results inputs={inputs} compact={compact} />
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box className={`calculator-loading`} style={styles.loading}>
+                    <Label className={`calculator-loading-label`} style={styles.footerText} accessibilityLiveRegion={`polite`}>
+                      {`Loading…`}
+                    </Label>
+                  </Box>
+                )}
               </Box>
-            )}
-            <Box className={`page-layout`} style={[styles.pageLayout, { minHeight: minimumHeight }, compact && styles.compactPageLayout, !showCalculator && styles.hidden]}>
-              {ready ? (
-                <Box className={`calculator-layout`} style={[styles.calculatorLayout, compact && styles.stackedLayout]}>
-                  <Box id={`income`} className={`calculator-inputs`} style={[styles.inputColumn, compact && styles.stackedColumn, mobile && activeTab !== `income` && styles.hidden]}>
-                    <IncomeCard inputs={inputs} compact={compact} onChange={updateInput} />
+              {storageStatus === `unavailable` && showCalculator && (
+                <Label className={`storage-status-error`} style={styles.storageError} accessibilityLiveRegion={`polite`}>
+                  {`Local saving is unavailable. Your changes may be lost when you close this page.`}
+                </Label>
+              )}
+              {Platform.OS === `web` && (
+                <>
+                  <Box id={`guides`} className={`guides-panel`} style={mobile && activeTab !== `guides` && styles.hidden}>
+                    {mobile && <SiteGuideDirectory />}
+                    <SiteContent />
+                    <AdSpace />
+                  </Box>
+                  <Box id={`more`} className={`more-panel`} style={[styles.morePanel, mobile && activeTab !== `more` && styles.hidden]}>
                     {mobile && (
-                      <Box className={`mobile-pay-action`} style={styles.mobilePayAction}>
+                      <Box className={`more-heading`} style={styles.moreHeading}>
+                        <Label className={`more-title`} accessibilityRole={`header`} style={styles.moreTitle}>
+                          {`More`}
+                        </Label>
+                        <Label className={`more-description`} style={styles.moreDescription}>
+                          {`About this calculator, privacy, and preferences.`}
+                        </Label>
+                      </Box>
+                    )}
+                    <SiteFooterLinks />
+                    {mobile && (
+                      <Box className={`mobile-preferences`} style={styles.mobilePreferences}>
                         <Button
-                          variant={`primary`}
-                          icon={ChartNoAxesColumn}
-                          label={`View pay breakdown`}
-                          className={`mobile-view-pay`}
-                          onPress={() => changeTab(`results`)}
+                          icon={isDark ? Sun : Moon}
+                          label={isDark ? `Switch to light mode` : `Switch to dark mode`}
+                          className={`mobile-theme-setting`}
+                          onPress={toggleTheme}
+                        />
+                        <Button
+                          icon={RotateCcw}
+                          disabled={!ready}
+                          label={`Reset calculator`}
+                          className={`mobile-reset-setting`}
+                          onPress={toggleReset}
+                          accessibilityState={{ expanded: resetOpen }}
                         />
                       </Box>
                     )}
                   </Box>
-                  <Box id={`results`} className={`calculator-results`} style={[styles.resultsColumn, compact && styles.stackedColumn, compact && styles.stackedResults, mobile && styles.mobileResults, mobile && activeTab !== `results` && styles.hidden]}>
-                    <Results inputs={inputs} compact={compact} />
-                  </Box>
-                </Box>
-              ) : (
-                <Box className={`calculator-loading`} style={styles.loading}>
-                  <Label className={`calculator-loading-label`} style={styles.footerText} accessibilityLiveRegion={`polite`}>
-                    {`Loading…`}
-                  </Label>
-                </Box>
+                </>
               )}
             </Box>
-            {storageStatus === `unavailable` && showCalculator && (
-              <Label className={`storage-status-error`} style={styles.storageError} accessibilityLiveRegion={`polite`}>
-                {`Local saving is unavailable. Your changes may be lost when you close this page.`}
-              </Label>
-            )}
-            {Platform.OS === `web` && (
-              <>
-                <Box id={`guides`} className={`guides-panel`} style={mobile && activeTab !== `guides` && styles.hidden}>
-                  {mobile && <SiteGuideDirectory />}
-                  <SiteContent />
-                  <AdSpace />
-                </Box>
-                <Box id={`more`} className={`more-panel`} style={[styles.morePanel, mobile && activeTab !== `more` && styles.hidden]}>
-                  {mobile && (
-                    <Box className={`more-heading`} style={styles.moreHeading}>
-                      <Label className={`more-title`} accessibilityRole={`header`} style={styles.moreTitle}>
-                        {`More`}
-                      </Label>
-                      <Label className={`more-description`} style={styles.moreDescription}>
-                        {`About this calculator, privacy, and preferences.`}
-                      </Label>
-                    </Box>
-                  )}
-                  <SiteFooterLinks />
-                  {mobile && (
-                    <Box className={`mobile-preferences`} style={styles.mobilePreferences}>
-                      <Button
-                        icon={isDark ? Sun : Moon}
-                        label={isDark ? `Switch to light mode` : `Switch to dark mode`}
-                        className={`mobile-theme-setting`}
-                        onPress={toggleTheme}
-                      />
-                      <Button
-                        icon={RotateCcw}
-                        disabled={!ready}
-                        label={`Reset calculator`}
-                        className={`mobile-reset-setting`}
-                        onPress={toggleReset}
-                        accessibilityState={{ expanded: resetOpen }}
-                      />
-                    </Box>
-                  )}
-                </Box>
-              </>
-            )}
-          </Box>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </Box>
       {mobile ? <MobileTabs activeTab={activeTab} onChange={changeTab} /> : <Footer compact={compact} />}
     </SafeAreaView>
   );
@@ -242,6 +315,8 @@ export default App;
 
 const createStyles = (colors: Palette) => StyleSheet.create({
   hidden: { display: `none` },
+  workspaceMain: { minWidth: 0 },
+  workspace: { flex: 1, minWidth: 0, minHeight: 0, flexDirection: `row` },
   morePanel: { gap: 20 },
   moreHeading: { gap: 6 },
   mobileResults: { borderLeftWidth: 0, borderTopWidth: 0 },

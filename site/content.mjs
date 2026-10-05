@@ -1,13 +1,5 @@
-const paragraph = (id, text) => `<p class="site-paragraph" id="${id}">${text}</p>`;
-const heading = (id, text) => `<h2 class="site-heading" id="${id}">${text}</h2>`;
-const link = (id, href, text) => `<a class="site-link" id="${id}" href="${href}">${text} →</a>`;
-const formula = (id, text) => `<p class="site-formula" id="${id}">${text}</p>`;
-const note = (id, text) => `<aside class="site-note" id="${id}">${text}</aside>`;
-const section = (id, title, content) => `<section class="site-section" id="${id}">${heading(`${id}-title`, title)}${content}</section>`;
-const question = (id, title, answer) => `<section class="site-section site-question" id="${id}"><h3 class="site-heading" id="${id}-title">${title}</h3>${paragraph(`${id}-answer`, answer)}</section>`;
-const list = (id, items) => `<ul class="site-list" id="${id}">${items.map((item, index) => `<li class="site-list-item" id="${id}-item-${index + 1}">${item}</li>`).join(``)}</ul>`;
-const article = (id, title, intro, content) => `<article class="site-copy site-article" id="${id}"><p class="site-eyebrow" id="${id}-eyebrow">Wages Calculator · Piratechs</p><h1 class="site-title" id="${id}-title">${title}</h1><p class="site-intro" id="${id}-intro">${intro}</p>${content}</article>`;
-const table = (id, caption, columns, rows) => `<div class="site-table-scroll" id="${id}-scroll"><table class="site-table" id="${id}"><caption class="site-table-caption" id="${id}-caption">${caption}</caption><thead class="site-table-head" id="${id}-head"><tr class="site-table-row" id="${id}-head-row">${columns.map((column, index) => `<th class="site-table-heading" id="${id}-heading-${index + 1}" scope="col">${column}</th>`).join(``)}</tr></thead><tbody class="site-table-body" id="${id}-body">${rows.map((row, index) => `<tr class="site-table-row" id="${id}-row-${index + 1}">${row.map((cell, cellIndex) => cellIndex === 0 ? `<th class="site-table-label" id="${id}-row-${index + 1}-cell-${cellIndex + 1}" scope="row">${cell}</th>` : `<td class="site-table-cell" id="${id}-row-${index + 1}-cell-${cellIndex + 1}">${cell}</td>`).join(``)}</tr>`).join(``)}</tbody></table></div>`;
+import { practicalGuides } from './practical-guides.mjs';
+import { paragraph, link, formula, note, section, question, list, article, table } from './content-helpers.mjs';
 
 export const homePage = {
   title: `Wages Calculator | Pay & Hourly Calculator`,
@@ -21,6 +13,8 @@ export const siteLinks = [
   { href: `/guides/salary-to-hourly/`, label: `Salary to hourly guide` },
   { href: `/guides/gross-and-take-home/`, label: `Gross vs. take-home pay` },
   { href: `/guides/work-schedules/`, label: `Monthly pay & schedules` },
+  { href: `/guides/check-your-paycheck/`, label: `Check a paycheck` },
+  { href: `/guides/variable-hours-and-pay-changes/`, label: `Variable hours & pay changes` },
 ];
 
 export const homeContent = `<section class="site-copy site-home-copy" id="home-copy">
@@ -41,6 +35,20 @@ export const homeContent = `<section class="site-copy site-home-copy" id="home-c
     question(`home-faq-overtime`, `Can I use it for part-time hours or overtime?`, `You can enter part-time hours and fewer paid weeks. For example, $20 an hour for 24 hours per week and 50 paid weeks is $24,000.00 per year. Every hour uses the same entered rate, so the calculator does not automatically add an overtime premium or combine jobs with different pay rates.`)
   )}
   ${section(`home-guides`, `Pay conversion guides and worked examples`, `<div class="site-guide-grid" id="home-guide-grid">${siteLinks.map((item, index) => `<a class="site-guide-link" id="home-guide-link-${index + 1}" href="${item.href}">${item.label} →</a>`).join(``)}</div>`)}
+  ${section(`home-scenarios`, `Choose the method that fits your situation`,
+    table(`home-scenario-table`, `What to enter and which result to use`, [`Your situation`, `Starting point`, `Useful result`], [
+      [`One hourly rate and a steady schedule`, `Enter hourly rate last; include paid leave in paid weeks.`, `Yearly gross for an annual comparison.`],
+      [`A fixed annual salary`, `Enter annual salary last, then change the schedule.`, `Hourly equivalent; the salary stays fixed.`],
+      [`Hours change during the year`, `Weight each schedule by its number of paid weeks.`, `Annual total using a representative weekly average.`],
+      [`A raise partway through the year`, `Calculate each part separately and add the gross totals.`, `Combined yearly income, entered as annual salary last.`],
+      [`A paycheck that differs from the monthly result`, `Match the pay period and hours on the payslip first.`, `Gross comparison before checking each deduction.`],
+    ]) +
+    paragraph(`home-scenario-next`, `The ${link(`home-variable-link`, `/guides/variable-hours-and-pay-changes/`, `variable-hours guide`)} shows the weighted calculation and a midyear raise. The ${link(`home-paycheck-link`, `/guides/check-your-paycheck/`, `paycheck walkthrough`)} separates pay-period differences from tax and benefit deductions.`)
+  )}
+  ${section(`home-methodology`, `Understand the result before using it`,
+    paragraph(`home-methodology-text`, `The calculator uses your schedule rather than assuming everyone works 2,080 hours a year. A monthly result averages the whole year; it does not predict your next deposit. The ${link(`home-methodology-link`, `/methodology/`, `calculation methodology`)} lists every formula, explains why salary mode behaves differently, and shows what zero inputs and rounding mean.`) +
+    paragraph(`home-editorial-text`, `Published by Piratechs. This explanation was updated October 4, 2026 to add variable-income and paycheck workflows. Use the ${link(`home-corrections-link`, `/contact/`, `correction and feedback instructions`)} to report an unclear explanation or a calculation issue with fictional inputs.`)
+  )}
   ${note(`home-method-note`, `Your inputs and theme are saved in this browser when local storage is available. The calculator does not ask for your name, employer, or bank details. Use the results for comparison and check actual pay against your employer’s records. ${link(`home-privacy-link`, `/privacy/`, `Read the privacy policy`)}`)}
 </section>`;
 
@@ -155,6 +163,55 @@ export const sitePages = [
         paragraph(`schedule-next`, `${link(`schedule-open-calculator`, `/`, `Calculate weekly and monthly pay`)} or ${link(`schedule-hourly-link`, `/guides/hourly-to-salary/`, `see hourly-to-salary examples`)}.`)) +
       note(`schedule-limits-note`, `Amounts are averages based on your inputs. Paid leave, overtime premiums, exact pay dates, and employer-specific payroll practices require information outside this calculator.`)),
   },
+  ...practicalGuides,
+  {
+    kind: `policy`,
+    slug: `methodology`,
+    title: `Calculation methodology and limits`,
+    description: `The formulas, input behavior, rounding, zero-value handling, and limitations behind Wages Calculator, with links to source code and official payroll resources.`,
+    body: article(
+      `methodology-page`,
+      `Calculation methodology and limits`,
+      `Every result comes from the pay amount and schedule you enter. This page explains the arithmetic so you can decide which result fits your comparison. Published by Piratechs; content updated October 4, 2026.`,
+      section(`methodology-mode`, `The last pay field you edit controls the result`,
+        paragraph(`methodology-hourly-mode`, `When you edit hourly rate last, that rate stays fixed while schedule changes update annual income. When you edit annual salary last, that annual amount stays fixed while schedule changes update its weekly and hourly equivalents. The other pay field shows a calculated equivalent rounded to cents.`) +
+        paragraph(`methodology-salary-example`, `For example, a fixed $48,000 salary with 40 hours per week and 50 paid weeks gives $24.00 per hour and $960.00 per paid week. Change to 52 paid weeks while keeping salary mode: annual gross stays $48,000, the hourly equivalent becomes $23.08, and the paid-week amount becomes $923.08. If unpaid leave reduces your actual annual salary, enter the reduced amount yourself.`)
+      ) +
+      section(`methodology-formulas`, `How each gross-pay period is calculated`,
+        table(`methodology-period-table`, `Formulas use the unrounded annual gross amount`, [`Result`, `Formula`, `Meaning`], [
+          [`Yearly, hourly mode`, `Hourly rate × hours per week × paid weeks`, `Annualized income for the stated schedule.`],
+          [`Yearly, salary mode`, `Entered annual salary`, `The fixed gross amount you supplied.`],
+          [`Monthly`, `Annual gross ÷ 12`, `Average across calendar months, including unpaid time.`],
+          [`Weekly`, `Annual gross ÷ paid weeks`, `Average per paid week, not per calendar week.`],
+          [`Daily`, `Annual gross ÷ (days per week × paid weeks)`, `Average per paid workday, not per calendar day.`],
+          [`Hourly`, `Annual gross ÷ (hours per week × paid weeks)`, `Effective rate for the paid schedule.`],
+        ]) +
+        paragraph(`methodology-days`, `Changing only days per week changes the daily average. It does not change total weekly hours or annual pay. For example, four nine-hour days and six six-hour days both total 36 hours; enter 36 in hours per week for either schedule.`)
+      ) +
+      section(`methodology-tax`, `The tax column is a single-percentage scenario`,
+        formula(`methodology-tax-equation`, `Estimated deduction = gross × entered percentage ÷ 100; estimated take-home = gross − estimated deduction`) +
+        paragraph(`methodology-tax-example`, `At $48,000 gross and a 20% estimate, the yearly deduction is $9,600 and estimated take-home is $38,400. The 24% starting value is an example, not a tax recommendation. The tool does not look up federal, state, or local tax rules and does not model separate benefit deductions.`) +
+        paragraph(`methodology-tax-source`, `For a U.S. federal income-tax withholding question, use the ${link(`methodology-irs-link`, `https://www.irs.gov/individuals/tax-withholding-estimator`, `IRS Tax Withholding Estimator`)} and review its eligibility and information requirements. Its purpose and inputs differ from this simple conversion tool.`)
+      ) +
+      section(`methodology-inputs`, `Input limits, zero values, and rounding`,
+        list(`methodology-input-list`, [
+          `Hours are limited to 168 per week, days to seven, paid weeks to 52, and the flat percentage to 100. These bounds prevent unusable inputs; they are not recommended schedules.`,
+          `The hourly amount is capped at $1,000,000 and annual salary at $1,000,000,000. Inputs accept decimal points; commas, currency symbols, and other characters are removed.`,
+          `A zero divisor produces a zero per-unit result. In salary mode, annual and monthly amounts can remain positive with zero hours or paid weeks; that is an incomplete schedule, not a meaningful hourly rate.`,
+          `Arithmetic uses unrounded amounts; displayed currency is rounded to two decimal places. Multiplying a displayed weekly amount by paid weeks may differ by a few cents from the annual result.`,
+          `Editing a rounded equivalent pay field makes that displayed amount the new source. For example, changing from a $48,000 salary at 40 hours and 52 paid weeks to its displayed $23.08 hourly rate annualizes to $48,006.40.`,
+        ])
+      ) +
+      section(`methodology-limits`, `What the tool leaves for a separate calculation`,
+        paragraph(`methodology-limits-text`, `Overtime premiums, multiple hourly rates, tips, commissions, bonuses, benefits, currency conversion, and exact payroll dates are not calculated automatically. Each entered hour uses the same rate. For changing schedules or a midyear raise, use the ${link(`methodology-variable-link`, `/guides/variable-hours-and-pay-changes/`, `variable-income walkthrough`)}. For a payslip comparison, use the ${link(`methodology-paycheck-link`, `/guides/check-your-paycheck/`, `paycheck guide`)}.`) +
+        paragraph(`methodology-overtime-source`, `An hourly equivalent does not establish whether a worker qualifies for overtime. The ${link(`methodology-dol-link`, `https://www.dol.gov/agencies/whd/overtime`, `U.S. Department of Labor overtime guidance`)} explains federal coverage and workweek rules; applicable state rules and employment circumstances may also matter.`)
+      ) +
+      section(`methodology-publishing`, `Publisher, sources, and corrections`,
+        paragraph(`methodology-source-code`, `Piratechs publishes the calculator and its explanations. The ${link(`methodology-source-link`, `https://github.com/strawhat19/Wages-Calculator/blob/main/src/lib/calculator.ts`, `calculation source code`)} shows the implementation. Worked examples on this site are fictional arithmetic illustrations. The IRS and Department of Labor links provide primary resources for questions outside the calculator’s scope; neither organization endorses this site.`) +
+        paragraph(`methodology-corrections`, `Report a discrepancy using the ${link(`methodology-contact-link`, `/contact/`, `contact instructions`)}. Include the last pay field edited, fictional inputs, and the expected result. Public issues can be followed in the ${link(`methodology-issues-link`, `https://github.com/strawhat19/Wages-Calculator/issues`, `project issue tracker`)}. Do not post personal payslips or financial records.`)
+      )
+    ),
+  },
   {
     kind: `policy`,
     slug: `about`,
@@ -174,18 +231,21 @@ export const sitePages = [
       section(`about-data`, `Designed for quick, private comparisons`,
         paragraph(`about-data-text`, `Income inputs and your appearance preference are saved locally when browser storage is available. There is no calculator account or cross-device synchronization. Read the ${link(`about-privacy-link`, `/privacy/`, `privacy policy`)} for details about local storage, hosting, and optional third-party services.`)) +
       section(`about-feedback`, `Corrections and feedback`,
-        paragraph(`about-feedback-text`, `If a calculation or explanation appears wrong, please tell us what you expected and provide a fictional example that reproduces the issue. The ${link(`about-contact-link`, `/contact/`, `contact page`)} explains how to report it. We do not provide individual tax, employment, or financial advice.`))),
+        paragraph(`about-feedback-text`, `If a calculation or explanation appears wrong, please tell us what you expected and provide a fictional example that reproduces the issue. The ${link(`about-contact-link`, `/contact/`, `contact page`)} explains how to report it. We do not provide individual tax, employment, or financial advice.`)) +
+      section(`about-editorial`, `How to evaluate these explanations`,
+        paragraph(`about-editorial-method`, `Piratechs is responsible for publishing the tool and its explanatory content. The ${link(`about-methodology-link`, `/methodology/`, `methodology page`)} connects the explanations to the calculation source and records the assumptions and limits. Worked examples use fictional amounts and schedules; they are not reports about real workers or promises of income.`) +
+        paragraph(`about-editorial-update`, `The October 4, 2026 content update adds a method for combining variable schedules and pay changes, a paycheck reconciliation walkthrough, and contextual help beside the results. Corrections can be reported in the public project issue tracker. Publication of a guide does not imply review by a tax or payroll professional.`))),
   },
   {
     kind: `policy`,
     slug: `privacy`,
     title: `Privacy Policy`,
     description: `How Wages Calculator uses local storage, Vercel Web Analytics, hosting services, and Google advertising, plus choices for your data.`,
-    body: article(`privacy-page`, `Privacy Policy`, `This policy describes the website published by Piratechs at wages-calculator.com. Last updated: September 21, 2026.`,
+    body: article(`privacy-page`, `Privacy Policy`, `This policy describes the website published by Piratechs at wages-calculator.com. Last updated: October 4, 2026.`,
       section(`privacy-calculator`, `Calculator inputs stay in your browser`,
         paragraph(`privacy-calculator-text`, `Wages Calculator performs its calculations in your browser. It does not ask for your name, employer, address, bank details, or government identifiers. We do not intentionally send your entered wage amounts, schedule, tax estimate, or calculation results to an analytics or advertising service.`) +
-        paragraph(`privacy-local-storage`, `The website uses local browser storage, through AsyncStorage, to remember your calculator inputs and theme preference. This lets them return when you reopen the site in the same browser. These preferences are not synchronized to another device. If storage is unavailable, the calculator can still work, but changes may not be saved.`) +
-        paragraph(`privacy-clear-data`, `Reset restores the example income and keeps your theme choice. To remove all locally saved settings, clear this site’s data in your browser’s privacy or storage settings. Blocking or clearing storage can prevent preferences from being remembered.`)) +
+        paragraph(`privacy-local-storage`, `The website uses local browser storage, through AsyncStorage, to remember your draft calculator inputs, saved wage snapshots, and theme preference. Pressing Enter in a calculator input or using Save stores a snapshot of the wage, schedule, and tax settings separately from your current draft. Selecting a saved wage restores those inputs. This data returns when you reopen the site in the same browser and is not synchronized to another device or stored in a calculator account or server. If storage is unavailable, the calculator can still work, but changes may not be saved.`) +
+        paragraph(`privacy-clear-data`, `Reset restores the example income while keeping your saved wages and theme choice. Use the remove button on a saved wage to delete that local snapshot. To remove all locally saved inputs, wages, and preferences, clear this site’s data in your browser’s privacy or storage settings. Blocking or clearing storage can prevent data from being remembered.`)) +
       section(`privacy-hosting`, `Hosting and routine request information`,
         paragraph(`privacy-hosting-text`, `Visiting a website sends information needed to deliver its pages. Our hosting provider, Vercel, may process request information such as an IP address, requested URL, browser details, and request time for delivery, security, and operational logs. Local calculation does not mean that visiting the website creates no network records.`) +
         paragraph(`privacy-hosting-policy`, `For the provider’s practices, see ${link(`privacy-vercel-link`, `https://vercel.com/legal/privacy-notice`, `Vercel’s privacy notice`)}.`)) +

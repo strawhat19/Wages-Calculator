@@ -23,11 +23,14 @@ Use `npm start` to open Expo and scan its QR code with an SDK 57-compatible Expo
 - Desktop inputs and results together, with Income, Pay, Guides, and More bottom navigation on phone browsers.
 - Clickable logo and brand name return home; the shared header menu includes every guide and information page.
 - Header dark-mode toggle with a locally saved preference, plus confirmation before resetting income.
+- Save wages with the Save icon button or Enter in any calculator input; saved cards show abbreviated gross hourly, weekly, monthly, and yearly pay.
+- A left sidebar on desktop and a left drawer on smaller screens let you restore a saved wage and its schedule/tax settings or remove an individual entry. Saving the same inputs again reuses the existing card.
 - Example inputs of $25 per hour and 40 hours per week.
+- Result-specific help links to methodology and relevant pay guides, with practical workflows for comparing offers and explaining paycheck differences.
 
 The last edited pay field is authoritative; the other shows its calculated equivalent rounded to cents. Hourly income is annualized as rate × weekly hours × paid weeks per year. Monthly income is annual income divided by 12; weekly and daily figures use the entered paid schedule. Calculation results retain precision and round only for display. Tax is a user-entered flat estimate; there are no tax tables, automatic overtime calculations, or country-specific tax rules.
 
-Inputs are saved locally with AsyncStorage after a short delay and restored on browser reload or app reopening. Existing saved income is retained; older bill data is ignored. Data stays in that device or browser; there is no account, backend, or synchronization. The interface reports input storage failures and remains usable when local storage is unavailable. Theme preference is stored separately, so resetting income keeps your chosen appearance.
+Draft inputs are saved locally with AsyncStorage after a short delay and restored on browser reload or app reopening. Saved wage snapshots are stored separately under `@wages-calculator/saved-wages/v1`, including all calculator inputs, and persist until individually removed or site/app data is cleared. Reset restores the example draft while keeping saved wages and your theme choice. Existing saved income is retained; older bill data is ignored. Data stays in that device or browser; there is no account, backend, or synchronization. The interface reports storage failures and remains usable when local storage is unavailable. Saving wages adds no analytics tracking.
 
 Below 768px, the website keeps a compact header and bottom navigation visible around one scrollable view. Income contains the inputs, Pay the live breakdown, Guides the reading material, and More the policy links and preferences. Tabs preserve the mounted calculator and its values; the logo returns to Income without resetting them. Browser back/forward and `/#income`, `/#results`, `/#guides`, and `/#more` restore the selected view. Long articles, small viewports, and the on-screen keyboard use internal scrolling. Native apps retain their existing calculator layout.
 
@@ -50,6 +53,9 @@ The homepage title is `Wages Calculator | Pay & Hourly Calculator`, keeping the 
 | `/guides/salary-to-hourly/` | Salary to hourly, annual salary divided by hours |
 | `/guides/gross-and-take-home/` | Gross pay versus estimated take-home pay |
 | `/guides/work-schedules/` | Weekly to monthly pay, paid weeks, biweekly versus twice-monthly pay |
+| `/guides/variable-hours-and-pay-changes/` | Variable weekly hours, multiple rates, and midyear pay changes |
+| `/guides/check-your-paycheck/` | Comparing a wage estimate with a paycheck and identifying differences |
+| `/methodology/` | Calculator formulas, input behavior, rounding, and limitations |
 
 The calculator and pre-JavaScript homepage share the `homePage` copy in `site/content.mjs`. The export produces unique page metadata, canonical URLs, a shared favicon, `WebSite`/`WebPage` structured data, and visible breadcrumbs with matching `BreadcrumbList` markup. Existing guide URLs remain stable. The content accurately describes a flat-rate estimate rather than promising jurisdiction-specific payroll or tax calculations.
 
@@ -59,9 +65,9 @@ These changes follow Google's [Search Essentials](https://developers.google.com/
 
 ## Website Content And Advertising
 
-The website includes About, Privacy Policy, Terms of Service, Contact, and four calculation guides: hourly to salary, salary to hourly, gross versus estimated take-home pay, and work schedules/pay periods. The homepage explains the formulas, assumptions, and limitations. Content lives in `site/content.mjs`; the calculator and static export share it.
+The website includes About, Privacy Policy, Terms of Service, Contact, a non-advertising methodology page, and six calculation guides: hourly to salary, salary to hourly, gross versus estimated take-home pay, work schedules/pay periods, variable hours/pay changes, and checking a paycheck against an estimate. The homepage explains the formulas, assumptions, limitations, and practical workflows; contextual links connect calculator results with the relevant explanations. Content lives in `site/content.mjs`; the calculator and static export share it.
 
-Production exports include the owner's AdSense script for `ca-pub-8379301195677583` in the homepage and four guide pages, plus ownership metadata and `/ads.txt`. Preview builds, policy/error pages, and native apps omit the script. The publisher ID can be overridden with `ADSENSE_PUBLISHER_ID`; setting it explicitly blank removes the script, verification metadata, and `ads.txt`.
+Production exports include the owner's AdSense script for `ca-pub-8379301195677583` in the homepage and all six guide pages, plus ownership metadata and `/ads.txt`. Preview builds, methodology/policy/error pages, and native apps omit the script. The publisher ID can be overridden with `ADSENSE_PUBLISHER_ID`; setting it explicitly blank removes the script, verification metadata, and `ads.txt`.
 
 The script may activate Auto ads according to the Google dashboard, independently of `ADSENSE_ENABLED` and `ADSENSE_CONSENT_READY`. Those flags gate manual placements, which remain off by default. When enabled on the configured production hostname, manual ads appear after the homepage explanation and guide content; the mobile homepage placement is in Guides. Approval and consent messages require account-side setup. A production export retains its script when served on an alternative hostname or locally. Google Analytics is not installed.
 

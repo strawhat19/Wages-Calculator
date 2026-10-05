@@ -5,6 +5,7 @@ export { bindHeaderMenus } from '../public/site-navigation.js';
 const informationLinks = [
   { href: `/about/`, label: `About` },
   { href: `/contact/`, label: `Contact` },
+  { href: `/methodology/`, label: `Calculation methodology` },
   { href: `/privacy/`, label: `Privacy Policy` },
   { href: `/terms/`, label: `Terms of Use` },
 ];

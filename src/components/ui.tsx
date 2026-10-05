@@ -35,6 +35,7 @@ export const Icon = ({ id, icon: Symbol, className, size = 20, color }: Identity
 type ButtonProps = Identity & {
   label: string;
   icon?: LucideIcon;
+  iconSize?: number;
   iconOnly?: boolean;
   selected?: boolean;
   disabled?: boolean;
@@ -49,7 +50,7 @@ type ButtonProps = Identity & {
 
 export const Button = ({
   id, icon, label, style, onPress, selected, disabled, className, labelStyle, iconOnly = false,
-  variant = `secondary`, accessibilityLabel, accessibilityState, accessibilityRole = `button`,
+  iconSize = 17, variant = `secondary`, accessibilityLabel, accessibilityState, accessibilityRole = `button`,
 }: ButtonProps) => {
   const { colors } = useTheme();
   const styles = createStyles(colors);
@@ -75,7 +76,15 @@ export const Button = ({
       accessibilityState={{ disabled, selected, ...accessibilityState }}
       style={[styles.button, styles[variant], selected && styles.selected, iconOnly && styles.iconButton, style, { opacity: disabled ? 0.4 : opacity }, webClass(className)]}
     >
-      {icon && <Icon icon={icon} size={17} color={String(textColor)} className={`${className}-icon`} id={`${identity}-icon`} />}
+      {icon && (
+        <Icon
+          icon={icon}
+          size={iconSize}
+          color={String(textColor)}
+          className={`${className}-icon`}
+          id={`${identity}-icon`}
+        />
+      )}
       {!iconOnly && (
         <Label className={`${className}-label`} id={`${identity}-label`} style={[styles.buttonLabel, { color: textColor }, labelStyle]}>
           {label}
@@ -118,10 +127,11 @@ type NumberFieldProps = {
   prefix?: string;
   suffix?: string;
   placeholder?: string;
+  onSubmit?: () => void;
   onChange: (value: string) => void;
 };
 
-export const NumberField = ({ id, label, value, max, large, compact, stacked, prefix, suffix, onChange, placeholder = `0` }: NumberFieldProps) => {
+export const NumberField = ({ id, label, value, max, large, compact, stacked, prefix, suffix, onChange, onSubmit, placeholder = `0` }: NumberFieldProps) => {
   const { colors, isDark } = useTheme();
   const styles = createStyles(colors);
   const [focused, setFocused] = useState(false);
@@ -150,7 +160,10 @@ export const NumberField = ({ id, label, value, max, large, compact, stacked, pr
           selectTextOnFocus
           inputMode={`decimal`}
           onChangeText={changeValue}
+          onSubmitEditing={onSubmit}
           placeholder={placeholder}
+          returnKeyType={onSubmit ? `done` : undefined}
+          submitBehavior={onSubmit ? `submit` : undefined}
           accessibilityLabel={label}
           keyboardType={`decimal-pad`}
           selectionColor={colors.green}

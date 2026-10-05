@@ -5,14 +5,23 @@ The code is prepared for `https://wages-calculator.com` with the owner's publish
 ## What the website provides
 
 - The existing hourly/salary calculator, with a clear flat-tax estimate disclaimer.
-- Original formula explanations, worked examples, and four dedicated guides.
+- Original formula explanations, worked examples, and six dedicated guides, including variable hours/pay changes and checking a paycheck against an estimate.
+- A non-advertising `/methodology/` page explaining each result's formula, assumptions, and limitations, plus contextual links from the calculator results and practical homepage workflows.
 - About, Privacy Policy, Terms of Service, and Contact pages. Contact uses the project's actual GitHub issue tracker and Piratechs website; public issues must not include personal pay records.
 - Static HTML documents, canonical metadata, a sitemap, robots instructions, and a real 404 page.
 - The supplied AdSense script, ownership verification metadata, root `ads.txt`, and optional Search Console verification metadata.
-- A responsive manual ad placement after the homepage explanation or at the end of a guide. On mobile the homepage placement is in Guides. Supporting policies and error pages have no ad requests.
+- A responsive manual ad placement after the homepage explanation or at the end of a guide. On mobile the homepage placement is in Guides. Methodology, supporting policies, and error pages have no ad requests.
 - Manual placements disabled by default. Preview builds and native app screens omit the AdSense script; serving a production export locally does not remove its script.
 
 Google's [readiness guidance](https://support.google.com/adsense/answer/7299563?hl=en) focuses on useful original content and clear navigation. It does not prescribe a 15–20-page minimum. These changes cannot guarantee acceptance or a review time.
+
+## Addressing the low-value content rejection
+
+The source already contained publisher, contact, privacy, and terms pages. This update adds practical value through a dedicated methodology page, variable-hours and pay-change examples, a guide for comparing estimates with a paycheck, result-specific help links, and clearer homepage workflows. These changes address the usefulness and originality emphasized in Google's [AdSense content and user experience guidance](https://support.google.com/adsense/answer/10015918); they do not guarantee approval.
+
+Before requesting another review, the owner should review the diff and confirm that publisher/contact details and dated content are accurate. Run the existing checks and export described below, then publish through the existing Vercel/GitHub workflow. On the production domain, confirm HTTPS access without authentication and direct reloads of `/methodology/`, `/guides/variable-hours-and-pay-changes/`, `/guides/check-your-paycheck/`, the existing guides, and information pages. Check the calculator's contextual links and content at phone and desktop sizes. These owner checks have not been performed by the agent.
+
+Genuine user interest requires actual usage and continued maintenance. Use the existing Vercel Analytics, Search Console reports, and correction requests to identify useful follow-up work. Do not buy artificial traffic, generate ad impressions, or click ads to demonstrate interest. There is no promised page, word, or traffic threshold for approval. Google's [helpful-content guidance](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) recognizes calculators as main content and rejects preferred-word-count assumptions. Once the improvements are published and reviewed, request review from the site's AdSense entry, following the [Program policies](https://support.google.com/adsense/answer/48182).
 
 ## 1. Review and publish the prepared site
 
@@ -43,7 +52,7 @@ Sign in to [Google AdSense](https://www.google.com/adsense/) with the account fo
 | `ADSENSE_ENABLED` | `false` |
 | `ADSENSE_CONSENT_READY` | `false` |
 
-Redeploy after changing build-time variables. The production homepage and four guides include the async script in `<head>`, with `crossorigin="anonymous"`. Exported pages also include the `google-adsense-account` meta tag, and `/ads.txt` contains `google.com, pub-8379301195677583, DIRECT, f08c47fec0942fa0`. An explicitly blank publisher variable suppresses the script, metadata, and seller file. Invalid settings fail the export instead of publishing a dummy integration.
+Redeploy after changing build-time variables. The production homepage and all six guides include the async script in `<head>`, with `crossorigin="anonymous"`. Exported pages also include the `google-adsense-account` meta tag, and `/ads.txt` contains `google.com, pub-8379301195677583, DIRECT, f08c47fec0942fa0`. An explicitly blank publisher variable suppresses the script, metadata, and seller file. Invalid settings fail the export instead of publishing a dummy integration.
 
 Choose AdSense's **AdSense code snippet** verification option and request review. The included meta tag is also a [supported verification method](https://support.google.com/adsense/answer/7584263?hl=en). Check that `/ads.txt` is a plain-text response at the root of the domain. Google [recommends ads.txt](https://support.google.com/adsense/answer/12171612?hl=en); it is not itself an approval guarantee.
 

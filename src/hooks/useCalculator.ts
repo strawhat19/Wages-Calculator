@@ -15,7 +15,7 @@ const normalizeNumber = (value: unknown, fallback: string, maximum: number) => {
   return numericValue(value) > maximum ? `${maximum}` : value;
 };
 
-const normalizeInputs = (value: unknown): CalculatorInputs => {
+export const normalizeInputs = (value: unknown): CalculatorInputs => {
   const defaults = createDefaultInputs();
   if (!isRecord(value)) return defaults;
   return {
@@ -98,5 +98,9 @@ export const useCalculator = () => {
   }, [changeInputs]);
 
   const reset = useCallback(() => changeInputs(createDefaultInputs), [changeInputs]);
-  return { ready, inputs, reset, updateInput, storageStatus };
+  const restoreInputs = useCallback((next: CalculatorInputs) => {
+    changeInputs(() => normalizeInputs(next));
+  }, [changeInputs]);
+
+  return { ready, inputs, reset, updateInput, restoreInputs, storageStatus };
 };

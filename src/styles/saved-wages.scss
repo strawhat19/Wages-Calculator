@@ -1,0 +1,50 @@
+.saved-wages-sidebar {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.saved-wages-rail,
+.saved-wages-panel-container {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.saved-wages-rail-toggle {
+  transition: opacity 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.saved-wages-list { overscroll-behavior: contain; }
+.saved-wages-rail-count,
+.saved-wage-value { font-variant-numeric: tabular-nums; }
+
+.saved-wage-card {
+  position: relative;
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+
+  &:focus-within {
+    border-color: var(--wages-focus, #2d624b);
+    box-shadow: 0 0 0 2px var(--wages-focus-ring, rgba(45, 98, 75, 0.09));
+  }
+}
+
+.saved-wage-select {
+  transition: opacity 180ms ease;
+
+  &:focus-visible { outline-offset: -3px; }
+}
+
+.saved-wage-remove {
+  transition: opacity 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.saved-wages-backdrop:hover { opacity: 1; }
+.saved-wages-drawer { box-shadow: 8px 0 32px rgba(0, 0, 0, 0.16); }
+
+@media (hover: hover) and (pointer: fine) {
+  .saved-wage-card:hover { border-color: var(--wages-focus, #2d624b); }
+  .saved-wage-remove:hover,
+  .saved-wages-rail-toggle:hover {
+    opacity: 1 !important;
+    background-color: var(--wages-row-hover, #f1f3f4) !important;
+  }
+}
